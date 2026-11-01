@@ -303,6 +303,72 @@ class ImplementationPlanResponse(BaseModel):
     updated_at: str
 
 
+class WorkspaceFileSchema(BaseModel):
+    path: str
+    name: str
+    is_dir: bool = False
+    size_bytes: int = 0
+    language: str = "plaintext"
+    git_status: Literal["clean", "modified", "added", "untracked"] = "clean"
+    updated_at: str = ""
+
+
+class WorkspaceLogSchema(BaseModel):
+    id: str
+    timestamp: str
+    stream: Literal["stdout", "stderr", "system"] = "system"
+    tag: str = "Runtime"
+    message: str
+
+
+class WorkspaceFileWriteRequest(BaseModel):
+    path: str = Field(..., min_length=1, max_length=512)
+    content: str = Field(..., max_length=500000)
+
+
+class WorkspaceFileReadResponse(BaseModel):
+    project_id: str
+    path: str
+    language: str
+    size_bytes: int
+    content: str
+
+
+class WorkspaceCommandRequest(BaseModel):
+    command: str = Field(..., min_length=1, max_length=1024)
+    timeout_seconds: int = Field(30, ge=1, le=300)
+
+
+class WorkspaceCommandResponse(BaseModel):
+    command: str
+    exit_code: int
+    stdout: str = ""
+    stderr: str = ""
+    duration_ms: int = 0
+    timed_out: bool = False
+    executed_at: str = ""
+
+
+class WorkspaceStatusResponse(BaseModel):
+    workspace_id: str
+    project_id: str
+    project_name: str
+    workspace_path: str
+    status: PreviewStatus = PreviewStatus.STOPPED
+    pid: Optional[int] = None
+    allocated_port: Optional[int] = None
+    preview_url: Optional[str] = None
+    hosting_tier: str = "render_free_tmp"
+    files_count: int = 0
+    cpu_percent: float = 0.0
+    memory_mb: float = 0.0
+    last_command: Optional[str] = None
+    files: list[WorkspaceFileSchema] = Field(default_factory=list)
+    logs: list[WorkspaceLogSchema] = Field(default_factory=list)
+    created_at: str
+    updated_at: str
+
+
 class ErrorResponse(BaseModel):
     error: dict = Field(
         ...,
@@ -317,6 +383,7 @@ class ErrorResponse(BaseModel):
 
 class HealthResponse(BaseModel):
     status: str = "ok"
-    version: str = "0.4.0"
+    version: str = "0.5.0"
     dev_mode: bool = False
     firebase_connected: bool = False
+

@@ -255,6 +255,65 @@ export const api = {
       { method: 'POST' },
       token,
     ),
+
+  // Workspace & Execution (Phase 5)
+  getWorkspace: (token: string, projectId: string) =>
+    request<import('@/types').WorkspaceStatus>(
+      `/projects/${projectId}/workspace`,
+      {},
+      token,
+    ),
+  createWorkspace: (token: string, projectId: string, autoStart = true) =>
+    request<import('@/types').WorkspaceStatus>(
+      `/projects/${projectId}/workspace?auto_start=${autoStart}`,
+      { method: 'POST' },
+      token,
+    ),
+  startWorkspace: (token: string, projectId: string) =>
+    request<import('@/types').WorkspaceStatus>(
+      `/projects/${projectId}/workspace/start`,
+      { method: 'POST' },
+      token,
+    ),
+  stopWorkspace: (token: string, projectId: string) =>
+    request<import('@/types').WorkspaceStatus>(
+      `/projects/${projectId}/workspace/stop`,
+      { method: 'POST' },
+      token,
+    ),
+  restartWorkspace: (token: string, projectId: string) =>
+    request<import('@/types').WorkspaceStatus>(
+      `/projects/${projectId}/workspace/restart`,
+      { method: 'POST' },
+      token,
+    ),
+  readWorkspaceFile: (token: string, projectId: string, path: string) =>
+    request<import('@/types').WorkspaceFileContent>(
+      `/projects/${projectId}/workspace/files/content?path=${encodeURIComponent(path)}`,
+      {},
+      token,
+    ),
+  writeWorkspaceFile: (token: string, projectId: string, path: string, content: string) =>
+    request<import('@/types').WorkspaceFileEntry>(
+      `/projects/${projectId}/workspace/files/content`,
+      { method: 'PUT', body: JSON.stringify({ path, content }) },
+      token,
+    ),
+  executeWorkspaceCommand: (
+    token: string,
+    projectId: string,
+    command: string,
+    timeoutSeconds = 30,
+  ) =>
+    request<import('@/types').WorkspaceCommandResult>(
+      `/projects/${projectId}/workspace/exec`,
+      {
+        method: 'POST',
+        body: JSON.stringify({ command, timeout_seconds: timeoutSeconds }),
+      },
+      token,
+    ),
 };
 
 export { ApiError };
+

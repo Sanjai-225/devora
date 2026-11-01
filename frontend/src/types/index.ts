@@ -271,6 +271,62 @@ export interface ImplementationPlan {
   updated_at: string;
 }
 
+export interface WorkspaceFileEntry {
+  path: string;
+  name: string;
+  is_dir: boolean;
+  size_bytes: number;
+  language: string;
+  git_status: 'clean' | 'modified' | 'added' | 'untracked';
+  updated_at: string;
+}
+
+export interface WorkspaceLogEntry {
+  id: string;
+  timestamp: string;
+  stream: 'stdout' | 'stderr' | 'system';
+  tag: string;
+  message: string;
+}
+
+export interface WorkspaceFileContent {
+  project_id: string;
+  path: string;
+  language: string;
+  size_bytes: number;
+  content: string;
+}
+
+export interface WorkspaceCommandResult {
+  command: string;
+  exit_code: number;
+  stdout: string;
+  stderr: string;
+  duration_ms: number;
+  timed_out: boolean;
+  executed_at: string;
+}
+
+export interface WorkspaceStatus {
+  workspace_id: string;
+  project_id: string;
+  project_name: string;
+  workspace_path: string;
+  status: PreviewStatus;
+  pid?: number | null;
+  allocated_port?: number | null;
+  preview_url?: string | null;
+  hosting_tier: string;
+  files_count: number;
+  cpu_percent: number;
+  memory_mb: number;
+  last_command?: string | null;
+  files: WorkspaceFileEntry[];
+  logs: WorkspaceLogEntry[];
+  created_at: string;
+  updated_at: string;
+}
+
 export interface ProjectListResponse {
   projects: Project[];
   total: number;

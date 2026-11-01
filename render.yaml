@@ -1,0 +1,36 @@
+# Render Free-Tier Blueprint for Devora Backend + LangGraph Agent
+# Deploy for $0/month on Render.com (Free Web Service plan)
+# Pair with Vercel Hobby (Free) for the Next.js 16 frontend (/frontend)
+# and Firebase Spark (Free) for Auth + Cloud Firestore.
+
+services:
+  - type: web
+    name: devora-backend
+    runtime: python
+    plan: free
+    region: oregon
+    rootDir: .
+    buildCommand: pip install --upgrade pip && pip install -r backend/requirements.txt
+    startCommand: PYTHONPATH=.:backend uvicorn backend.app.main:app --host 0.0.0.0 --port ${PORT:-8000}
+    healthCheckPath: /api/v1/health
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.11.9"
+      - key: DEV_MODE
+        value: "false"
+      - key: DEVORA_FREE_TIER
+        value: "true"
+      - key: WORKSPACES_DIR
+        value: "/tmp/devora/workspaces"
+      - key: CHECKPOINT_DB_PATH
+        value: "/tmp/devora/checkpoints/agent.db"
+      - key: FIREBASE_PROJECT_ID
+        value: "rapid-shift-r8chg"
+      - key: FIREBASE_DATABASE_ID
+        value: "ai-studio-1c7f4661-dbcb-4537-bd88-5e63b84c93f3"
+      - key: CORS_ORIGINS
+        sync: false
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: FIREBASE_SERVICE_ACCOUNT_JSON
+        sync: false

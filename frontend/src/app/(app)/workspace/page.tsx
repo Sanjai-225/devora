@@ -1,12 +1,12 @@
 'use client';
 
 /**
- * Project Workspace & Agent Hub — connects the sidebar /workspace link
- * to the active project's Requirement Synthesis & Agent Chat workspace.
+ * Devora — Global Workspace Entry Route (/workspace)
+ * Renders the Phase 5 Autonomous Workspace & Execution IDE directly.
  */
 
-import ProjectRequirementAnalysisPage from '../projects/[id]/page';
+import ProjectWorkspacePage from '@/app/(app)/projects/[id]/workspace/page';
 
-export default function WorkspacePage() {
-  return <ProjectRequirementAnalysisPage />;
+export default function GlobalWorkspacePage() {
+  return <ProjectWorkspacePage />;
 }

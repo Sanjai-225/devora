@@ -16,17 +16,22 @@ _firestore_client = None
 
 
 def init_firebase() -> None:
-    """Initialize Firebase Admin SDK."""
+    """Initialize Firebase Admin SDK (supports file path or inline JSON for Render Free Tier)."""
     global _firebase_app, _firestore_client
 
-    if settings.dev_mode and not settings.firebase_project_id:
+    if settings.dev_mode and not settings.firebase_service_account_path and not settings.firebase_service_account_json:
         logger.warning(
-            "DEV_MODE: Firebase not configured. Using in-memory mock services."
+            "DEV_MODE: Firebase service account not configured. Using in-memory mock services."
         )
         return
 
     try:
-        if settings.firebase_service_account_path:
+        import json
+
+        if settings.firebase_service_account_json:
+            cert_dict = json.loads(settings.firebase_service_account_json)
+            cred = credentials.Certificate(cert_dict)
+        elif settings.firebase_service_account_path:
             cred = credentials.Certificate(settings.firebase_service_account_path)
         else:
             cred = credentials.ApplicationDefault()
@@ -35,7 +40,9 @@ def init_firebase() -> None:
             cred, {"projectId": settings.firebase_project_id}
         )
         _firestore_client = firestore.client()
-        logger.info("Firebase initialized successfully.")
+        logger.info(
+            f"Firebase initialized successfully (project={settings.firebase_project_id})."
+        )
     except Exception as e:
         logger.error(f"Firebase initialization failed: {e}")
         if not settings.dev_mode:

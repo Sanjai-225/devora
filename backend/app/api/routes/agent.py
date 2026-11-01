@@ -47,7 +47,11 @@ async def get_agent_manager() -> AgentManager:
     global _agent_manager
     if _agent_manager is None:
         api_key = settings.gemini_api_key or os.environ.get("GEMINI_API_KEY", "")
-        checkpoint_path = os.path.join(settings.workspaces_dir, "checkpoints", "agent.db")
+        checkpoint_path = (
+            os.environ.get("CHECKPOINT_DB_PATH")
+            or settings.checkpoint_db_path
+            or os.path.join(settings.workspaces_dir, "checkpoints", "agent.db")
+        )
         _agent_manager = AgentManager(
             gemini_api_key=api_key,
             checkpoint_path=checkpoint_path,

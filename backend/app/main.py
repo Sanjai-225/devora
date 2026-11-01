@@ -6,7 +6,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.api.routes import agent, auth, configuration, design, projects, users
+from app.api.routes import agent, auth, configuration, design, projects, users, workspace
 from app.core.config import settings
 from app.core.firebase import init_firebase
 from app.models.schemas import HealthResponse
@@ -34,7 +34,7 @@ async def lifespan(app: FastAPI):
 app = FastAPI(
     title="Devora API",
     description="AI-powered website development platform backend",
-    version="0.4.0",
+    version="0.5.0",
     lifespan=lifespan,
 )
 
@@ -54,6 +54,7 @@ app.include_router(projects.router, prefix="/api/v1")
 app.include_router(agent.router, prefix="/api/v1")
 app.include_router(design.router, prefix="/api/v1")
 app.include_router(configuration.router, prefix="/api/v1")
+app.include_router(workspace.router, prefix="/api/v1")
 
 
 @app.get("/api/v1/health", response_model=HealthResponse, tags=["health"])
@@ -63,7 +64,8 @@ async def health_check():
 
     return HealthResponse(
         status="ok",
-        version="0.4.0",
+        version="0.5.0",
         dev_mode=settings.dev_mode,
         firebase_connected=get_firestore_client() is not None,
     )
+
