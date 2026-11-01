@@ -1,4 +1,6 @@
 node_modules/
+frontend/node_modules/
+frontend/.next/
 build/
 dist/
 coverage/
@@ -6,3 +8,12 @@ coverage/
 *.log
 .env*
 !.env.example
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.venv/
+venv/
+checkpoints/
+*.db
+DRAFT_firestore.rules
