@@ -1,0 +1,410 @@
+<!DOCTYPE html><html class="dark" lang="en"><head><meta charset="utf-8"><meta content="width=device-width, initial-scale=1.0" name="viewport"><meta content="web_dashboard" name="shell-type"><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&amp;family=JetBrains+Mono:wght@100..900&amp;display=swap" rel="stylesheet"><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config={darkMode:"class",theme:{extend:{"colors":{"primary-container":"#00f0ff","on-tertiary-fixed":"#07006c","inverse-on-surface":"#2f3034","surface-dim":"#111317","primary-fixed-dim":"#00dbe9","on-background":"#e2e2e6","surface-bright":"#37393d","outline-variant":"#3b494b","surface-container":"#1e2023","on-tertiary-container":"#494bd7","on-tertiary-fixed-variant":"#2f2ebe","secondary-fixed":"#6ffbbe","on-error":"#690005","on-surface-variant":"#b9cacb","on-primary-container":"#006970","surface-tint":"#00dbe9","secondary-fixed-dim":"#4edea3","on-secondary-container":"#00311f","primary-fixed":"#7df4ff","tertiary-fixed":"#e1e0ff","secondary":"#4edea3","surface-container-lowest":"#0c0e11","inverse-surface":"#e2e2e6","on-secondary-fixed-variant":"#005236","tertiary":"#f8f4ff","on-tertiary":"#1000a9","surface-container-highest":"#333538","on-primary-fixed-variant":"#004f54","on-primary-fixed":"#002022","surface-variant":"#333538","surface-container-high":"#282a2d","tertiary-container":"#d7d6ff","on-surface":"#e2e2e6","inverse-primary":"#006970","primary":"#dbfcff","secondary-container":"#00a572","surface-container-low":"#1a1c1f","error-container":"#93000a","background":"#111317","surface":"#111317","tertiary-fixed-dim":"#c0c1ff","on-secondary-fixed":"#002113","outline":"#849495","on-error-container":"#ffdad6","on-secondary":"#003824","on-primary":"#00363a","error":"#ffb4ab"},"borderRadius":{"DEFAULT":"0.125rem","lg":"0.25rem","xl":"0.5rem","full":"0.75rem"},"spacing":{"gutter":"1rem","space-md":"0.75rem","margin":"1.5rem","space-lg":"1rem","gutter-mobile":"0.75rem","space-2xl":"2rem","space-xxs":"0.125rem","space-xl":"1.5rem","margin-mobile":"1rem","space-sm":"0.5rem","space-xs":"0.25rem"},"fontFamily":{"headline-sm":["Geist"],"body-md":["Geist"],"display-hero-mobile":["Geist"],"code-inline":["JetBrains Mono"],"body-lg":["Geist"],"headline-lg-mobile":["Geist"],"display-hero":["Geist"],"headline-md":["Geist"],"code-block":["JetBrains Mono"],"headline-lg":["Geist"],"body-sm":["Geist"],"label-ui":["Geist"],"label-code":["JetBrains Mono"]},"fontSize":{"headline-sm":["16px",{"lineHeight":"22px","letterSpacing":"-0.01em","fontWeight":"500"}],"body-md":["13px",{"lineHeight":"20px","letterSpacing":"0em","fontWeight":"400"}],"display-hero-mobile":["32px",{"lineHeight":"36px","letterSpacing":"-0.025em","fontWeight":"600"}],"code-inline":["12px",{"lineHeight":"16px","letterSpacing":"0em","fontWeight":"400"}],"body-lg":["15px",{"lineHeight":"24px","letterSpacing":"-0.005em","fontWeight":"400"}],"headline-lg-mobile":["24px",{"lineHeight":"30px","letterSpacing":"-0.015em","fontWeight":"600"}],"display-hero":["48px",{"lineHeight":"52px","letterSpacing":"-0.03em","fontWeight":"600"}],"headline-md":["20px",{"lineHeight":"26px","letterSpacing":"-0.015em","fontWeight":"500"}],"code-block":["13px",{"lineHeight":"20px","letterSpacing":"0em","fontWeight":"400"}],"headline-lg":["30px",{"lineHeight":"36px","letterSpacing":"-0.02em","fontWeight":"600"}],"body-sm":["12px",{"lineHeight":"18px","letterSpacing":"0.005em","fontWeight":"400"}],"label-ui":["12px",{"lineHeight":"16px","letterSpacing":"0.01em","fontWeight":"500"}],"label-code":["11px",{"lineHeight":"14px","letterSpacing":"0.02em","fontWeight":"500"}]}}}}</script></head><body class="bg-surface font-body-md text-on-surface antialiased"><aside class="fixed left-0 top-0 h-full w-64 bg-surface-container-low border-r border-outline-variant/30 z-50 flex flex-col justify-between select-none"><div class="flex flex-col"><div class="h-14 px-space-md border-b border-outline-variant/20 flex items-center justify-between"><div class="flex items-center gap-space-sm"><img alt="Devora Wordmark Logo" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1WRPssqMFdKy2-3H70oQeBSxcVBfkR9pZ6oBgWkKclMfAybBqNjdABXKAV1FQp5PSsiZu0-hkIcNYFIuZgkCa3nCiXDgSo1v5-qJcJ4_CApjwwsc3NhxlG92Pe5yhXpEZIJzdw_IrtJRvO827HCaIn9JFIIXNGvOiMj1AwCYgjXUa103e_48uBajYegbL-qMRF-Z7xnOhPdeHvcXQew0ggJ7CNUrec2WOz7i2F49lfMig"><span class="font-label-code text-label-code text-primary-container px-1.5 py-0.5 rounded bg-surface-container-highest/60 border border-primary-container/20">v2.4</span></div><button class="text-on-surface-variant hover:text-on-surface p-1 rounded hover:bg-surface-container transition-colors" title="Collapse Sidebar"><span class="material-symbols-outlined text-[18px]">dock_to_left</span></button></div><div class="p-space-sm"><div class="flex items-center justify-between px-space-sm py-1.5 rounded bg-surface-container-lowest border border-outline-variant/30"><div class="flex items-center gap-space-xs"><div class="w-1.5 h-1.5 rounded-full bg-secondary shadow-[0_0_8px_rgba(78,222,163,0.8)]"></div><span class="font-label-code text-label-code text-on-surface-variant">Sonnet 3.5</span></div><span class="font-label-code text-label-code text-secondary">ONLINE</span></div></div><div class="px-space-md pt-space-xs pb-1"><span class="font-label-code text-[10px] tracking-wider uppercase text-on-surface-variant/70">Platform Suite</span></div><nav class="flex flex-col gap-0.5 px-space-xs" data-active-classes="bg-surface-container-high text-primary border-l-2 border-primary-container shadow-[inset_0_0_12px_rgba(0,240,255,0.06)]"><a class="flex items-center justify-between px-space-sm py-2 rounded text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all group" data-path="dashboard" href="#"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[18px] group-hover:text-primary-container transition-colors">grid_view</span><span class="font-label-ui text-label-ui">Dashboard</span></div></a><a aria-current="page" class="flex items-center justify-between px-space-sm py-2 rounded transition-all group bg-surface-container-high text-primary border-l-2 border-primary-container shadow-[inset_0_0_12px_rgba(0,240,255,0.06)]" data-path="create-website" href="#"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[18px] group-hover:text-primary-container transition-colors">add_circle</span><span class="font-label-ui text-label-ui">Create Website</span></div><span class="font-label-code text-[10px] px-1.5 py-0.2 rounded bg-primary-container/20 text-primary-container border border-primary-container/30">NEW</span></a><a class="flex items-center justify-between px-space-sm py-2 rounded text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all group" data-path="my-projects" href="#"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[18px] group-hover:text-primary-container transition-colors">folder_open</span><span class="font-label-ui text-label-ui">My Projects</span></div><span class="font-label-code text-label-code text-on-surface-variant/60">12</span></a><a class="flex items-center justify-between px-space-sm py-2 rounded text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all group" data-path="design-studio" href="#"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[18px] group-hover:text-primary-container transition-colors">palette</span><span class="font-label-ui text-label-ui">Design Studio</span></div></a><a class="flex items-center justify-between px-space-sm py-2 rounded text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all group" data-path="workspace" href="#"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[18px] group-hover:text-primary-container transition-colors">terminal</span><span class="font-label-ui text-label-ui">Workspace</span></div></a><a class="flex items-center justify-between px-space-sm py-2 rounded text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all group" data-path="integrations" href="#"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[18px] group-hover:text-primary-container transition-colors">hub</span><span class="font-label-ui text-label-ui">Integrations</span></div></a><a class="flex items-center justify-between px-space-sm py-2 rounded text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all group" data-path="settings" href="#"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[18px] group-hover:text-primary-container transition-colors">tune</span><span class="font-label-ui text-label-ui">Settings</span></div></a></nav></div><div class="flex flex-col border-t border-outline-variant/20 p-space-sm gap-space-xs"><div class="flex items-center justify-between p-space-xs rounded hover:bg-surface-container transition-colors cursor-pointer"><div class="flex items-center gap-space-sm min-w-0"><img alt="Profile" class="w-8 h-8 rounded-full object-cover border border-outline-variant/40" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC66oQY2CT61oYK7NIFBfRI_kuuGVdhPF3Hx8lVvFl_Wd1JAutYtOSSObKP5VmxjzE05pbVvcrssYfYuZLSeMe_lUhRjZs2wo22X_LbaH3a5sG7Te6dJaaBAytT78tJZgD03xeWHz2RrBHW9jq9OwdcLO9Pj2zWfoYjgEItryiNo-sR6Dm4qpM-6rgT2B597dDRQxQpw4vPziHyiMiH0ybO92-nO0adjh2uxbzNFm4L"><div class="flex flex-col min-w-0"><span class="font-label-ui text-label-ui text-on-surface truncate">Core Team Org</span><span class="font-label-code text-[10px] text-on-surface-variant truncate">dev@devora.ai</span></div></div><span class="material-symbols-outlined text-[16px] text-on-surface-variant">unfold_more</span></div></div></aside><div class="pl-64"><header class="fixed top-0 left-64 right-0 h-14 bg-surface/85 backdrop-blur-md border-b border-outline-variant/20 z-40 flex items-center justify-between px-space-md"><div class="flex items-center gap-space-md"><div class="flex items-center gap-space-xs px-2.5 py-1 rounded bg-surface-container border border-outline-variant/30 text-on-surface-variant cursor-pointer hover:border-outline hover:text-on-surface transition-all"><span class="material-symbols-outlined text-[16px]">search</span><span class="font-label-ui text-label-ui pr-space-md">Quick Jump...</span><kbd class="font-label-code text-[10px] bg-surface-container-highest px-1.5 py-0.5 rounded text-on-surface">⌘K</kbd></div><div class="hidden lg:flex items-center gap-space-xs font-label-code text-label-code text-on-surface-variant border-l border-outline-variant/30 pl-space-md"><span class="w-2 h-2 rounded-full bg-primary-container"></span><span class="">GPT-4o &amp; Claude Sync</span></div></div><div class="flex items-center gap-space-sm"><a class="font-label-ui text-label-ui text-on-surface-variant hover:text-on-surface px-2 py-1 rounded hover:bg-surface-container transition-colors" data-path="documentation" href="#">Docs</a><button class="p-1.5 rounded text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors relative" title="Notifications"><span class="material-symbols-outlined text-[18px]">notifications</span><span class="absolute top-1 right-1 w-1.5 h-1.5 bg-primary-container rounded-full"></span></button><button class="flex items-center gap-space-xs font-label-code text-label-code px-2.5 py-1 rounded bg-surface-container-high border border-outline-variant/30 text-secondary hover:border-secondary/40 transition-colors"><span class="w-1.5 h-1.5 rounded-full bg-secondary"></span><span class="">Deploy v2.4</span></button><div class="pl-space-xs"><img alt="Profile" class="w-8 h-8 rounded-full object-cover border border-outline-variant/50 cursor-pointer" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC66oQY2CT61oYK7NIFBfRI_kuuGVdhPF3Hx8lVvFl_Wd1JAutYtOSSObKP5VmxjzE05pbVvcrssYfYuZLSeMe_lUhRjZs2wo22X_LbaH3a5sG7Te6dJaaBAytT78tJZgD03xeWHz2RrBHW9jq9OwdcLO9Pj2zWfoYjgEItryiNo-sR6Dm4qpM-6rgT2B597dDRQxQpw4vPziHyiMiH0ybO92-nO0adjh2uxbzNFm4L"></div></div></header><main class="relative pt-14 w-full bg-surface min-h-screen"><div class="flex flex-col w-full">
+<div class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col gap-8">
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+<div class="flex flex-col gap-1">
+<div class="flex items-center gap-2">
+<a class="font-label-ui text-label-ui text-on-surface-variant hover:text-on-surface transition-colors" href="#">Projects</a>
+<span class="text-on-surface-variant/40 font-code-inline text-code-inline">/</span>
+<span class="font-label-ui text-label-ui text-primary-container font-medium">New Website</span>
+<span class="ml-2 font-label-code text-label-code text-on-surface-variant/60 bg-surface-container-high px-2 py-0.5 rounded">INIT_RUN_049</span>
+</div>
+<h1 class="font-headline-lg text-headline-lg text-on-surface tracking-tight mt-1">Describe your application</h1>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-2xl">Devora's autonomous agents will plan architecture, design UI, generate clean Next.js/React code, and run test suites.</p>
+</div>
+<div class="flex items-center bg-surface-container-low p-1 rounded-xl self-start md:self-auto shadow-sm">
+<button class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-surface-container-high text-primary font-label-ui text-label-ui shadow-sm transition-all" id="mode-blank" onclick="setMode('blank')">
+<span class="material-symbols-outlined text-[16px]">edit_note</span>
+<span class="">Blank Slate</span>
+</button>
+<button class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-on-surface-variant hover:text-on-surface font-label-ui text-label-ui transition-all" id="mode-figma" onclick="setMode('figma')">
+<span class="material-symbols-outlined text-[16px]">draw</span>
+<span class="">Import Figma / Spec</span>
+<span class="ml-1 font-label-code text-[10px] text-secondary bg-surface-container-lowest px-1.5 py-0.5 rounded">BETA</span>
+</button>
+</div>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+<div class="lg:col-span-8 flex flex-col gap-6">
+<div class="bg-surface-container-low rounded-xl p-5 shadow-md flex flex-col gap-4">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+<div class="flex flex-col gap-1 w-full sm:w-2/3">
+<label class="font-label-ui text-label-ui text-on-surface flex items-center gap-1.5" for="project-name">
+<span class="">Project Name</span>
+<span class="text-error font-code-inline text-code-inline">*</span>
+</label>
+<div class="relative flex items-center">
+<input class="w-full bg-surface-container-lowest text-on-surface px-3 py-2 rounded-lg font-body-md text-body-md placeholder:text-on-surface-variant/40 focus:outline-none focus:ring-1 focus:ring-primary-container shadow-inner" id="project-name" oninput="updateSlug(this.value)" placeholder="e.g. Acme Cloud Observability" type="text" value="Novastride - Fleet Intelligence Platform">
+</div>
+</div>
+<div class="flex flex-col gap-1 sm:w-1/3">
+<span class="font-label-ui text-label-ui text-on-surface-variant">Staging Endpoint</span>
+<div class="bg-surface-container text-on-surface-variant px-3 py-2 rounded-lg font-label-code text-label-code flex items-center gap-1.5 overflow-hidden shadow-inner">
+<span class="material-symbols-outlined text-[14px] text-secondary">cloud_done</span>
+<span class="text-primary truncate" id="project-slug">novastride-fleet.devora.app</span>
+</div>
+</div>
+</div>
+</div>
+<div class="bg-surface-container-low rounded-xl p-5 shadow-lg flex flex-col gap-4">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px] text-primary-container">psychology</span>
+<label class="font-label-ui text-label-ui text-on-surface font-medium" for="prompt-textarea">Natural-Language Requirements &amp; Architecture</label>
+</div>
+<div class="flex items-center gap-2">
+<span class="font-label-code text-label-code text-on-surface-variant bg-surface-container-highest px-2 py-0.5 rounded">Autonomous Engine v2.4</span>
+</div>
+</div>
+<div class="relative rounded-xl overflow-hidden bg-surface-container-lowest shadow-inner p-1 group">
+<textarea class="w-full bg-transparent text-on-surface p-4 font-body-md text-body-md leading-relaxed resize-none focus:outline-none placeholder:text-on-surface-variant/40 selection:bg-primary-container selection:text-on-primary-fixed" id="prompt-textarea" oninput="updateTokens(this.value)" placeholder="Describe user flows, components, external APIs, data states, and visual design requirements..." rows="7">Build a high-performance fleet intelligence dashboard for electric vehicle logistics. It needs an interactive live telemetry map showing vehicle routes, battery degradation graphs using Recharts, an alert feed with severity filters (critical, warning, nominal), vehicle maintenance scheduling table with modal forms, and Stripe integration for fleet subscription tiers. Use Next.js 14 App Router, TypeScript, Tailwind CSS, and mock sensor WebSockets.</textarea>
+<div class="flex flex-wrap items-center justify-between gap-3 px-3 py-2 bg-surface-container-low rounded-lg mt-1">
+<div class="flex items-center gap-3">
+<div class="flex items-center gap-1.5 text-on-surface-variant font-label-code text-label-code">
+<span class="w-1.5 h-1.5 rounded-full bg-primary-container animate-pulse"></span>
+<span id="token-counter" class="">142 tokens</span>
+<span class="text-on-surface-variant/40">/ 4,096 max</span>
+</div>
+<div class="h-3 w-px bg-surface-container-highest hidden sm:block"></div>
+<span class="hidden sm:inline-block font-label-code text-[11px] text-on-surface-variant/60">Complexity: High Modular</span>
+</div>
+<div class="flex items-center gap-2">
+
+
+<div class="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-surface-container border border-primary-container/30 text-primary-container font-label-code text-[11px] shadow-[inset_0_0_12px_rgba(0,240,255,0.06)]"><span class="material-symbols-outlined text-[14px] text-primary-container animate-pulse">smart_toy</span><span class="">AI Agent Active</span></div><button class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-surface-container-high hover:bg-surface-container-highest text-primary-container font-label-ui text-label-ui transition-all shadow-sm" id="enhance-btn" onclick="enhancePrompt()" type="button">
+<span class="material-symbols-outlined text-[16px]">auto_fix_high</span>
+<span class="">Enhance with Devora AI</span>
+</button>
+</div>
+</div>
+</div>
+<div class="flex flex-col gap-2 pt-1">
+<span class="font-label-code text-[11px] uppercase tracking-wider text-on-surface-variant/70">Or initialize from benchmark templates</span>
+<div class="flex flex-wrap gap-2">
+<button class="px-2.5 py-1.5 rounded-lg bg-surface-container text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high font-label-ui text-label-ui transition-all flex items-center gap-1.5 shadow-sm" onclick="applyTemplate('saas')" type="button">
+<span class="material-symbols-outlined text-[14px] text-primary">analytics</span>
+<span class="">SaaS Analytics Dashboard with Team Permissions</span>
+</button>
+<button class="px-2.5 py-1.5 rounded-lg bg-surface-container text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high font-label-ui text-label-ui transition-all flex items-center gap-1.5 shadow-sm" onclick="applyTemplate('ide')" type="button">
+<span class="material-symbols-outlined text-[14px] text-secondary">terminal</span>
+<span class="">AI Developer Tool with Monaco Code Editor &amp; Live Preview</span>
+</button>
+<button class="px-2.5 py-1.5 rounded-lg bg-surface-container text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high font-label-ui text-label-ui transition-all flex items-center gap-1.5 shadow-sm" onclick="applyTemplate('ecom')" type="button">
+<span class="material-symbols-outlined text-[14px] text-primary-container">shopping_bag</span>
+<span class="">Modern E-commerce Storefront with Stripe &amp; Algolia</span>
+</button>
+<button class="px-2.5 py-1.5 rounded-lg bg-surface-container text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high font-label-ui text-label-ui transition-all flex items-center gap-1.5 shadow-sm" onclick="applyTemplate('portal')" type="button">
+<span class="material-symbols-outlined text-[14px] text-secondary-fixed">shield_person</span>
+<span class="">B2B Customer Portal with Role-Based Auth &amp; Invoicing</span>
+</button>
+</div>
+</div>
+</div>
+<div class="bg-surface-container-low rounded-xl p-5 shadow-md flex flex-col gap-4">
+<div class="flex items-center justify-between cursor-pointer select-none" onclick="toggleTechStack()">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px] text-secondary">layers</span>
+<span class="font-headline-sm text-headline-sm text-on-surface">Target Architecture &amp; Toolchain</span>
+<span class="font-label-code text-label-code text-secondary bg-surface-container-highest px-2 py-0.5 rounded">Customizable</span>
+</div>
+<button class="text-on-surface-variant hover:text-on-surface p-1 rounded transition-transform" id="tech-toggle-icon" type="button">
+<span class="material-symbols-outlined text-[20px]">keyboard_arrow_down</span>
+</button>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2" id="tech-stack-panel">
+<div class="bg-surface-container-lowest p-3.5 rounded-lg flex flex-col gap-2.5">
+<div class="flex items-center justify-between">
+<span class="font-label-ui text-label-ui text-on-surface-variant uppercase tracking-wider font-semibold">Framework</span>
+<span class="font-label-code text-[11px] text-primary">v14.2</span>
+</div>
+<div class="grid grid-cols-2 gap-2">
+<button class="framework-opt px-2.5 py-1.5 rounded bg-surface-container-high text-primary font-label-code text-label-code flex items-center justify-between shadow-sm" onclick="selectOption(this, 'framework')" type="button">
+<span class="">Next.js 14 (App)</span>
+<span class="material-symbols-outlined text-[14px]">check</span>
+</button>
+<button class="framework-opt px-2.5 py-1.5 rounded bg-surface-container text-on-surface-variant hover:text-on-surface font-label-code text-label-code flex items-center justify-between" onclick="selectOption(this, 'framework')" type="button">
+<span class="">Vite + React</span>
+</button>
+<button class="framework-opt px-2.5 py-1.5 rounded bg-surface-container text-on-surface-variant hover:text-on-surface font-label-code text-label-code flex items-center justify-between" onclick="selectOption(this, 'framework')" type="button">
+<span class="">Remix Run</span>
+</button>
+<button class="framework-opt px-2.5 py-1.5 rounded bg-surface-container text-on-surface-variant hover:text-on-surface font-label-code text-label-code flex items-center justify-between" onclick="selectOption(this, 'framework')" type="button">
+<span class="">Astro 4.0</span>
+</button>
+</div>
+</div>
+<div class="bg-surface-container-lowest p-3.5 rounded-lg flex flex-col gap-2.5">
+<div class="flex items-center justify-between">
+<span class="font-label-ui text-label-ui text-on-surface-variant uppercase tracking-wider font-semibold">Styling &amp; Tokens</span>
+<span class="font-label-code text-[11px] text-secondary">Geist UI</span>
+</div>
+<div class="grid grid-cols-2 gap-2">
+<button class="styling-opt px-2.5 py-1.5 rounded bg-surface-container-high text-primary font-label-code text-label-code flex items-center justify-between shadow-sm" onclick="selectOption(this, 'styling')" type="button">
+<span class="">Tailwind CSS</span>
+<span class="material-symbols-outlined text-[14px]">check</span>
+</button>
+<button class="styling-opt px-2.5 py-1.5 rounded bg-surface-container text-on-surface-variant hover:text-on-surface font-label-code text-label-code flex items-center justify-between" onclick="selectOption(this, 'styling')" type="button">
+<span class="">CSS Modules</span>
+</button>
+<button class="styling-opt px-2.5 py-1.5 rounded bg-surface-container text-on-surface-variant hover:text-on-surface font-label-code text-label-code flex items-center justify-between" onclick="selectOption(this, 'styling')" type="button">
+<span class="">Vanilla CSS</span>
+</button>
+<button class="styling-opt px-2.5 py-1.5 rounded bg-surface-container text-on-surface-variant hover:text-on-surface font-label-code text-label-code flex items-center justify-between" onclick="selectOption(this, 'styling')" type="button">
+<span class="">StyleX</span>
+</button>
+</div>
+</div>
+<div class="bg-surface-container-lowest p-3.5 rounded-lg flex flex-col gap-2.5">
+<div class="flex items-center justify-between">
+<span class="font-label-ui text-label-ui text-on-surface-variant uppercase tracking-wider font-semibold">State &amp; Backend</span>
+<span class="font-label-code text-[11px] text-on-surface-variant">PostgreSQL</span>
+</div>
+<div class="grid grid-cols-2 gap-2">
+<button class="backend-opt px-2.5 py-1.5 rounded bg-surface-container-high text-primary font-label-code text-label-code flex items-center justify-between shadow-sm" onclick="selectOption(this, 'backend')" type="button">
+<span class="">TypeScript Strict</span>
+<span class="material-symbols-outlined text-[14px]">check</span>
+</button>
+<button class="backend-opt px-2.5 py-1.5 rounded bg-surface-container text-on-surface-variant hover:text-on-surface font-label-code text-label-code flex items-center justify-between" onclick="selectOption(this, 'backend')" type="button">
+<span class="">Supabase DB</span>
+</button>
+<button class="backend-opt px-2.5 py-1.5 rounded bg-surface-container text-on-surface-variant hover:text-on-surface font-label-code text-label-code flex items-center justify-between" onclick="selectOption(this, 'backend')" type="button">
+<span class="">Prisma ORM</span>
+</button>
+<button class="backend-opt px-2.5 py-1.5 rounded bg-surface-container text-on-surface-variant hover:text-on-surface font-label-code text-label-code flex items-center justify-between" onclick="selectOption(this, 'backend')" type="button">
+<span class="">Node.js API</span>
+</button>
+</div>
+</div>
+<div class="bg-surface-container-lowest p-3.5 rounded-lg flex flex-col gap-2.5">
+<div class="flex items-center justify-between">
+<span class="font-label-ui text-label-ui text-on-surface-variant uppercase tracking-wider font-semibold">Authentication</span>
+<span class="font-label-code text-[11px] text-on-surface-variant">Zero-Trust</span>
+</div>
+<div class="grid grid-cols-2 gap-2">
+<button class="auth-opt px-2.5 py-1.5 rounded bg-surface-container text-on-surface-variant hover:text-on-surface font-label-code text-label-code flex items-center justify-between" onclick="selectOption(this, 'auth')" type="button">
+<span class="">NextAuth.js</span>
+</button>
+<button class="auth-opt px-2.5 py-1.5 rounded bg-surface-container-high text-primary font-label-code text-label-code flex items-center justify-between shadow-sm" onclick="selectOption(this, 'auth')" type="button">
+<span class="">Clerk Auth</span>
+<span class="material-symbols-outlined text-[14px]">check</span>
+</button>
+<button class="auth-opt px-2.5 py-1.5 rounded bg-surface-container text-on-surface-variant hover:text-on-surface font-label-code text-label-code flex items-center justify-between" onclick="selectOption(this, 'auth')" type="button">
+<span class="">Supabase Auth</span>
+</button>
+<button class="auth-opt px-2.5 py-1.5 rounded bg-surface-container text-on-surface-variant hover:text-on-surface font-label-code text-label-code flex items-center justify-between" onclick="selectOption(this, 'auth')" type="button">
+<span class="">None (Public)</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="lg:col-span-4 flex flex-col gap-6">
+<div class="bg-surface-container-low rounded-xl p-5 shadow-lg flex flex-col gap-4">
+<div class="flex items-center justify-between">
+<span class="font-headline-sm text-headline-sm text-on-surface">Synthesis Spec</span>
+<span class="font-label-code text-label-code text-secondary flex items-center gap-1 bg-surface-container-highest px-2 py-0.5 rounded">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span> Ready
+            </span>
+</div>
+<div class="relative w-full h-44 rounded-lg overflow-hidden bg-surface-container-lowest flex items-center justify-center group shadow-inner">
+<img class="w-full h-full object-cover opacity-60 group-hover:opacity-85 transition-opacity" data-alt="Futuristic cybernetic interface visualizing fleet management wireframes with electric cyan nodes, dark obsidian panels, network links, high precision developer dashboard mockups with sleek typography and neon telemetry highlights" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCoiZzsbExb2tPzfM-PbAqtaUGwr2BFuBxb-03fEFiL2ve6ZJSuiHKMPfbl0OpE02LMbSRRG2ybbnW3fFZdh5XS8vS9kaP1bDrCcIgtLAIgFtHx8rhOqrLvKAZGfn4u52QTVKhVZwVwyNsszc5jWf0eP-uYU2khPpOurgEv2hRNqxOqMHHuPBcVnAKdN0fdKI2rbH__-WbZmYAPsraWMXNavjAFutKH_ItTfnKq7gJ3">
+<div class="absolute inset-0 bg-gradient-to-t from-surface-container-lowest via-transparent to-transparent"></div>
+<div class="absolute bottom-2.5 left-3 right-3 flex items-center justify-between">
+<div class="flex flex-col">
+<span class="font-label-code text-[11px] text-primary">AUTODETECTED BLUEPRINT</span>
+<span class="font-body-sm text-body-sm text-on-surface">Modular Fleet Telemetry</span>
+</div>
+<span class="font-label-code text-[10px] text-on-surface-variant bg-surface-container/80 px-1.5 py-0.5 rounded backdrop-blur-sm">8 Views Planned</span>
+</div>
+</div>
+<div class="flex flex-col gap-2.5 pt-1">
+<div class="flex items-start gap-2.5">
+<span class="material-symbols-outlined text-[16px] text-primary-container mt-0.5">account_tree</span>
+<div class="flex flex-col">
+<span class="font-label-ui text-label-ui text-on-surface font-medium">Architecture Map</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Live telemetry sockets, caching layer, Edge workers</span>
+</div>
+</div>
+<div class="flex items-start gap-2.5">
+<span class="material-symbols-outlined text-[16px] text-secondary mt-0.5">database</span>
+<div class="flex flex-col">
+<span class="font-label-ui text-label-ui text-on-surface font-medium">Data Modeling</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Vehicles, BatteryLogs, MaintenanceIntervals, Subscriptions</span>
+</div>
+</div>
+<div class="flex items-start gap-2.5">
+<span class="material-symbols-outlined text-[16px] text-primary mt-0.5">verified_user</span>
+<div class="flex flex-col">
+<span class="font-label-ui text-label-ui text-on-surface font-medium">Test &amp; Type Safety</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Vitest unit suites + Playwright end-to-end telemetry harness</span>
+</div>
+</div>
+</div>
+<div class="bg-surface-container-lowest rounded-lg p-3 flex flex-col gap-2 shadow-inner">
+<div class="flex items-center justify-between text-on-surface-variant font-label-code text-label-code">
+<span class="">Agent Memory Status</span>
+<span class="text-primary font-medium">Synced</span>
+</div>
+<div class="w-full bg-surface-container-high h-1.5 rounded-full overflow-hidden">
+<div class="bg-primary-container h-full rounded-full w-4/5"></div>
+</div>
+<div class="flex items-center justify-between text-on-surface-variant font-label-code text-[10px]">
+<span class="">Context Cache: 32.4 KB</span>
+<span class="">Tokens Allocated: 16k</span>
+</div>
+</div>
+</div>
+<div class="bg-surface-container-low rounded-xl p-5 shadow-md flex flex-col gap-3">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px] text-primary-container">info</span>
+<span class="font-label-ui text-label-ui text-on-surface font-medium">Autonomous Execution Guarantee</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+            Devora builds complete repository branches with valid GitHub webhooks, automatic CI validation, and zero uninstantiated placeholder stubs.
+          </p>
+</div>
+</div>
+</div>
+<div class="sticky bottom-4 z-30 w-full bg-surface-container-low/95 backdrop-blur-md rounded-xl p-4 shadow-xl flex flex-col sm:flex-row items-center justify-between gap-4">
+<div class="flex items-center gap-4 w-full sm:w-auto">
+<div class="flex items-center gap-2 bg-surface-container-lowest px-3 py-1.5 rounded-lg shadow-inner">
+<span class="material-symbols-outlined text-[16px] text-primary animate-spin">cyclone</span>
+<div class="flex flex-col">
+<span class="font-label-code text-[10px] text-on-surface-variant/70 uppercase leading-none">Primary Intelligence</span>
+<span class="font-label-code text-label-code text-on-surface font-medium leading-tight">Claude 3.5 Sonnet + Devora CodeGen-V2</span>
+</div>
+</div>
+<div class="hidden md:flex items-center gap-1.5 font-label-code text-label-code text-on-surface-variant">
+<span class="material-symbols-outlined text-[16px] text-secondary">timelapse</span>
+<span class="">Est. Generation: <strong class="text-on-surface font-medium">~45s</strong></span>
+</div>
+</div>
+<div class="flex items-center gap-3 w-full sm:w-auto justify-end">
+<button class="px-4 py-2 rounded-lg bg-surface-container hover:bg-surface-container-high text-on-surface font-label-ui text-label-ui transition-all flex items-center gap-1.5 shadow-sm" id="draft-btn" onclick="saveDraft()" type="button">
+<span class="material-symbols-outlined text-[16px]">bookmark</span>
+<span class="">Save Draft</span>
+</button>
+<button class="px-5 py-2 rounded-lg bg-primary-container hover:brightness-110 text-on-surface-lowest font-headline-sm text-headline-sm transition-all flex items-center gap-2 shadow-lg shadow-primary-container/20 group" id="generate-cta" onclick="generateProject()" type="button">
+<span class="text-surface-container-lowest font-semibold">Generate &amp; Analyze Requirements</span>
+<span class="material-symbols-outlined text-[18px] text-surface-container-lowest group-hover:translate-x-0.5 transition-transform">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<script>
+  function updateSlug(val) {
+    const slugEl = document.getElementById('project-slug');
+    if (!slugEl) return;
+    const clean = val.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+    slugEl.textContent = (clean || 'project') + '.devora.app';
+  }
+
+  function updateTokens(text) {
+    const counterEl = document.getElementById('token-counter');
+    if (!counterEl) return;
+    const tokens = Math.max(12, Math.round(text.trim().split(/\s+/).filter(Boolean).length * 1.35));
+    counterEl.textContent = tokens + ' tokens';
+  }
+
+  function setMode(mode) {
+    const blankBtn = document.getElementById('mode-blank');
+    const figmaBtn = document.getElementById('mode-figma');
+    if (mode === 'blank') {
+      blankBtn.className = 'flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-surface-container-high text-primary font-label-ui text-label-ui shadow-sm transition-all';
+      figmaBtn.className = 'flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-on-surface-variant hover:text-on-surface font-label-ui text-label-ui transition-all';
+    } else {
+      figmaBtn.className = 'flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-surface-container-high text-primary font-label-ui text-label-ui shadow-sm transition-all';
+      blankBtn.className = 'flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-on-surface-variant hover:text-on-surface font-label-ui text-label-ui transition-all';
+    }
+  }
+
+  function toggleTechStack() {
+    const panel = document.getElementById('tech-stack-panel');
+    const icon = document.getElementById('tech-toggle-icon');
+    if (!panel || !icon) return;
+    if (panel.classList.contains('hidden')) {
+      panel.classList.remove('hidden');
+      icon.style.transform = 'rotate(0deg)';
+    } else {
+      panel.classList.add('hidden');
+      icon.style.transform = 'rotate(-90deg)';
+    }
+  }
+
+  function selectOption(btn, category) {
+    const buttons = document.querySelectorAll('.' + category + '-opt');
+    buttons.forEach(b => {
+      b.className = category + '-opt px-2.5 py-1.5 rounded bg-surface-container text-on-surface-variant hover:text-on-surface font-label-code text-label-code flex items-center justify-between';
+      const check = b.querySelector('.material-symbols-outlined');
+      if (check) check.remove();
+    });
+    btn.className = category + '-opt px-2.5 py-1.5 rounded bg-surface-container-high text-primary font-label-code text-label-code flex items-center justify-between shadow-sm';
+    const checkSpan = document.createElement('span');
+    checkSpan.className = 'material-symbols-outlined text-[14px]';
+    checkSpan.textContent = 'check';
+    btn.appendChild(checkSpan);
+  }
+
+  const templates = {
+    saas: "Build an enterprise SaaS telemetry & customer analytics dashboard. Include real-time cohort tracking graphs with period filters (7d, 30d, 90d), granular team permission matrices (Owner, Admin, Member, Auditor), custom webhooks dispatcher table, export to CSV/JSON modals, and automatic dark/light theme switching. Built with Next.js 14 App Router and Supabase RLS.",
+    ide: "Create an AI-native Developer Tool with Monaco Code Editor, split AST preview terminal, live execution sandbox, and diff visualizer. Add a side-by-side prompt tuning console with sliding temperature metrics, token pricing calculator, and exportable GitHub Actions deployment workflows.",
+    ecom: "Construct a luxury streetwear e-commerce platform with Instant Algolia search filters, animated 3D product viewports, slide-out cart drawer with dynamic shipping calculations, and end-to-end Stripe Checkout integration. Ensure 100/100 Lighthouse performance using Next.js Image optimization.",
+    portal: "Architect a multi-tenant B2B client customer portal with role-based auth, PDF invoice downloader with auto-generated previews, interactive milestone Gantt chart for contracted work, and a real-time messaging feed backed by Postgres Change streams."
+  };
+
+  function applyTemplate(key) {
+    const area = document.getElementById('prompt-textarea');
+    if (area && templates[key]) {
+      area.value = templates[key];
+      updateTokens(area.value);
+    }
+  }
+
+  function enhancePrompt() {
+    const btn = document.getElementById('enhance-btn');
+    const area = document.getElementById('prompt-textarea');
+    if (!btn || !area) return;
+    const oldText = btn.innerHTML;
+    btn.innerHTML = '<span class="material-symbols-outlined text-[16px] animate-spin">sync</span><span>Enhancing...</span>';
+    setTimeout(() => {
+      area.value += "\n\nAdditionally, incorporate automatic error boundaries with Sentry integration, deterministic mock datasets with Faker.js, and zero-layout-shift responsive skeletons for all asynchronous data tables.";
+      updateTokens(area.value);
+      btn.innerHTML = '<span class="material-symbols-outlined text-[16px] text-secondary">check</span><span>Enhanced!</span>';
+      setTimeout(() => { btn.innerHTML = oldText; }, 2000);
+    }, 700);
+  }
+
+  function toggleVoice() {
+    const btn = document.getElementById('voice-btn');
+    if (!btn) return;
+    btn.classList.toggle('text-error');
+    btn.classList.toggle('bg-error-container/30');
+  }
+
+  function triggerAttach() {
+    alert("Attachment drawer: Upload Figma JSON or OpenAPI 3.0 specification.");
+  }
+
+  function saveDraft() {
+    const btn = document.getElementById('draft-btn');
+    if (!btn) return;
+    const oldText = btn.innerHTML;
+    btn.innerHTML = '<span class="material-symbols-outlined text-[16px] text-secondary">check</span><span>Draft Saved</span>';
+    setTimeout(() => { btn.innerHTML = oldText; }, 1800);
+  }
+
+  function generateProject() {
+    const cta = document.getElementById('generate-cta');
+    if (!cta) return;
+    cta.disabled = true;
+    cta.innerHTML = '<span class="material-symbols-outlined text-[18px] text-surface-container-lowest animate-spin">refresh</span><span class="text-surface-container-lowest font-semibold">Synthesizing Architecture...</span>';
+    setTimeout(() => {
+      cta.innerHTML = '<span class="material-symbols-outlined text-[18px] text-surface-container-lowest">rocket_launch</span><span class="text-surface-container-lowest font-semibold">Workspace Initialized!</span>';
+    }, 1500);
+  }
+</script></main></div>
+
+</body></html>
