@@ -79,6 +79,26 @@ class AgentMessageRequest(BaseModel):
     choice: Optional[str] = None
 
 
+class WorkflowDecisionRequest(BaseModel):
+    choice: Literal["design_first", "direct_code"] = Field(
+        ...,
+        description="Whether to generate an interactive prototype in Design Studio or proceed directly to code",
+    )
+
+
+class DesignModifyRequest(BaseModel):
+    prompt: str = Field(
+        ...,
+        min_length=1,
+        max_length=5000,
+        description="Natural language design modification instruction",
+    )
+    token_overrides: Optional[dict[str, Any]] = Field(
+        None,
+        description="Optional direct overrides to color_palette, typography, border_radius, or spacing_scale",
+    )
+
+
 # ── Response Models ─────────────────────────────────────────────────
 
 
@@ -139,6 +159,26 @@ class ConversationListResponse(BaseModel):
     total: int
 
 
+class DesignVersionResponse(BaseModel):
+    id: str
+    project_id: str
+    version_number: int
+    version_tag: str
+    label: str
+    prompt: str
+    summary_of_changes: str
+    design_spec: dict[str, Any]
+    prototype_code: str
+    approved: bool = False
+    created_at: str
+
+
+class DesignVersionListResponse(BaseModel):
+    versions: list[DesignVersionResponse]
+    active_version_id: Optional[str] = None
+    approved_version_id: Optional[str] = None
+
+
 class AgentStateResponse(BaseModel):
     project_id: str
     status: ProjectStatus
@@ -168,6 +208,6 @@ class ErrorResponse(BaseModel):
 
 class HealthResponse(BaseModel):
     status: str = "ok"
-    version: str = "0.1.0"
+    version: str = "0.3.0"
     dev_mode: bool = False
     firebase_connected: bool = False

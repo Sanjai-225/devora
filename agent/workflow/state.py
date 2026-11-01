@@ -5,7 +5,10 @@ Defines the shared state that flows through all agent workflow nodes.
 
 from typing import Annotated, Any, Literal, Optional
 
-from langgraph.graph import MessagesState
+try:
+    from langgraph.graph import MessagesState
+except ImportError:
+    MessagesState = dict  # type: ignore[misc,assignment]
 from pydantic import BaseModel, Field
 
 

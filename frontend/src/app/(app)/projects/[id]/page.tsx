@@ -530,7 +530,10 @@ export default function ProjectRequirementAnalysisPage() {
           <Button
             variant="primary"
             size="sm"
-            onClick={() => handleApproveStack('proceed')}
+            onClick={async () => {
+              await handleApproveStack('proceed');
+              router.push(`/projects/${projectId}/workflow-decision`);
+            }}
             loading={isProcessing}
           >
             <span>Proceed to Workflow Decision</span>
@@ -988,9 +991,9 @@ export default function ProjectRequirementAnalysisPage() {
                 size="sm"
                 className="flex-1"
                 loading={isProcessing}
-                onClick={() => {
-                  handleApproveStack('proceed');
-                  router.push('/workspace');
+                onClick={async () => {
+                  await handleApproveStack('proceed');
+                  router.push(`/projects/${projectId}/workflow-decision`);
                 }}
               >
                 <span>Continue to Dev Flow</span>

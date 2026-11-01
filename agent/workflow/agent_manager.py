@@ -1,9 +1,9 @@
 """Devora Agent — Agent session manager.
 
 Manages agent workflow sessions: starting analysis, resuming after
-user input, and tracking active sessions. Supports both LangGraph
-runtime and a direct node-execution fallback if LangGraph is not
-installed in the host Python environment.
+user input, design generation/modification/approval, and tracking
+active sessions. Supports both LangGraph runtime and direct node
+execution fallback.
 """
 
 import json
@@ -12,18 +12,17 @@ from typing import Any, AsyncGenerator, Optional
 
 from agent.providers.llm_provider import LLMMessage, LLMProvider
 from agent.providers.mock_provider import MockLLMProvider
+from agent.workflow.design_nodes import (
+    generate_initial_design,
+    modify_design_version,
+    select_design_workflow,
+)
 
 logger = logging.getLogger(__name__)
 
 try:
     from langchain_core.messages import AIMessage, HumanMessage
     from agent.workflow.graph import create_agent_workflow
-    from agent.workflow.nodes import (
-        analyze_requirements,
-        check_clarification,
-        confirm_stack,
-        process_answers,
-    )
 
     HAS_LANGGRAPH = True
 except ImportError:
@@ -57,6 +56,10 @@ class AgentSession:
             "confirmed_stack": None,
             "stack_confirmed": False,
             "design_choice": "pending",
+            "design_specification": None,
+            "design_versions": [],
+            "approved_design_version": None,
+            "design_prototype_code": None,
             "current_stage": "init",
             "agent_response": None,
             "should_wait_for_user": False,
@@ -70,10 +73,7 @@ class AgentSession:
         return {"configurable": {"thread_id": self.thread_id}}
 
     async def start_analysis(self, user_request: str) -> AsyncGenerator[dict, None]:
-        """Start requirement analysis for a new project.
-
-        Yields events as they occur in the workflow.
-        """
+        """Start requirement analysis for a new project."""
         logger.info(f"Starting analysis for project {self.project_id}")
         self._state["user_request"] = user_request
 
@@ -107,19 +107,13 @@ class AgentSession:
                     }
             return
 
-        # Direct node execution fallback (when LangGraph is not installed)
         async for ev in self._run_direct_analysis(user_request):
             yield ev
 
     async def resume_with_input(
         self, user_input: str | dict, input_type: str = "message"
     ) -> AsyncGenerator[dict, None]:
-        """Resume the workflow after user input.
-
-        Args:
-            user_input: The user's response text or structured answers dict
-            input_type: Type of input ('clarification', 'stack_confirmation', 'message')
-        """
+        """Resume the workflow after user input."""
         logger.info(
             f"Resuming session for project {self.project_id}, input_type={input_type}"
         )
@@ -182,8 +176,7 @@ class AgentSession:
                         "confirmed_stack": self._state.get("confirmed_stack"),
                         "response": (
                             "✅ Technology stack confirmed! Your project requirements are locked in.\n\n"
-                            "In the next phase, you'll be able to choose whether to design a visual "
-                            "prototype first or go straight to code generation."
+                            "You can now choose whether to design a visual prototype first or go straight to code generation."
                         ),
                     }
                     return
@@ -205,13 +198,11 @@ class AgentSession:
                         "requirements": self._state.get("requirements"),
                         "confirmed_stack": self._state.get("confirmed_stack"),
                         "response": (
-                            "🎨 Great choice! I'll create a visual prototype first.\n\n"
-                            "The Design Studio will be available in the next phase."
+                            "🎨 Great choice! Opening Design Studio to generate your visual prototype."
                         ),
                     }
                     return
 
-            # User wants to modify something or sent a follow-up message
             combined_request = (
                 f"{self._state.get('user_request', '')}\n\n"
                 f"Additional user instructions/modifications: {normalized_input}"
@@ -220,15 +211,118 @@ class AgentSession:
                 yield ev
             return
 
-        # Direct execution fallback when LangGraph is not installed
         async for ev in self._run_direct_resume(user_input, input_type):
             yield ev
 
+    # ── Phase 3: Design System & Prototype Methods ──────────────────
+
+    async def set_workflow_choice(self, choice: str) -> dict[str, Any]:
+        """Set design_first or direct_code workflow decision."""
+        out = await select_design_workflow(self._state, choice)
+        self._merge_local_state(out)
+        if self.graph is not None and HAS_LANGGRAPH:
+            try:
+                await self.graph.aupdate_state(self.config, out)
+            except Exception:
+                pass
+        return out
+
+    async def generate_design(self) -> dict[str, Any]:
+        """Generate initial DesignSpecification and React/TypeScript prototype."""
+        out = await generate_initial_design(self._state, self.llm)
+        self._merge_local_state(out)
+        if self.graph is not None and HAS_LANGGRAPH:
+            try:
+                await self.graph.aupdate_state(self.config, out)
+            except Exception:
+                pass
+        return out
+
+    async def modify_design(
+        self,
+        instruction: str,
+        token_overrides: Optional[dict[str, Any]] = None,
+    ) -> dict[str, Any]:
+        """Modify the current design prototype via natural language or token overrides."""
+        if not self._state.get("design_specification"):
+            await self.generate_design()
+        out = await modify_design_version(
+            self._state,
+            self.llm,
+            instruction=instruction,
+            token_overrides=token_overrides,
+        )
+        self._merge_local_state(out)
+        if self.graph is not None and HAS_LANGGRAPH:
+            try:
+                await self.graph.aupdate_state(self.config, out)
+            except Exception:
+                pass
+        return out
+
+    async def approve_design(self, version_id: Optional[str] = None) -> dict[str, Any]:
+        """Approve a design version and advance workflow to Phase 4 (Configuration & Planning)."""
+        versions = self._state.get("design_versions") or []
+        if not versions:
+            await self.generate_design()
+            versions = self._state.get("design_versions") or []
+
+        target_id = version_id or (versions[-1]["id"] if versions else "ver-1")
+        approved_doc = None
+        for v in versions:
+            if v["id"] == target_id:
+                v["approved"] = True
+                approved_doc = v
+            else:
+                v["approved"] = False
+
+        if approved_doc is None and versions:
+            versions[-1]["approved"] = True
+            approved_doc = versions[-1]
+            target_id = approved_doc["id"]
+
+        update = {
+            "approved_design_version": target_id,
+            "design_specification": approved_doc["design_spec"] if approved_doc else self._state.get("design_specification"),
+            "design_prototype_code": approved_doc["prototype_code"] if approved_doc else self._state.get("design_prototype_code"),
+            "current_stage": "configuration",
+            "should_wait_for_user": False,
+            "wait_reason": None,
+            "agent_response": f"✅ Design version **{approved_doc['version_tag'] if approved_doc else target_id}** approved and synced with codebase!",
+        }
+        self._state.update(update)
+        if self.graph is not None and HAS_LANGGRAPH:
+            try:
+                await self.graph.aupdate_state(self.config, update)
+            except Exception:
+                pass
+        return {
+            **update,
+            "approved_version": approved_doc,
+        }
+
+    async def restore_design_version(self, version_id: str) -> Optional[dict[str, Any]]:
+        """Restore a previous design version as the active design specification & prototype."""
+        versions = self._state.get("design_versions") or []
+        target = next((v for v in versions if v["id"] == version_id), None)
+        if not target:
+            return None
+
+        self._state["design_specification"] = target["design_spec"]
+        self._state["design_prototype_code"] = target["prototype_code"]
+        self._state["agent_response"] = f"Restored design version **{target['version_tag']} • {target['label']}**."
+        return target
+
     def _merge_local_state(self, node_output: dict) -> None:
         for k, v in node_output.items():
-            if k in ("clarification_questions", "clarification_answers") and isinstance(v, list):
+            if k in ("clarification_questions", "clarification_answers", "design_versions") and isinstance(v, list):
                 existing = self._state.get(k) or []
-                self._state[k] = existing + v
+                existing_ids = {item.get("id") for item in existing if isinstance(item, dict) and item.get("id")}
+                new_items = [
+                    item for item in v
+                    if not (isinstance(item, dict) and item.get("id") in existing_ids)
+                ]
+                self._state[k] = existing + new_items
             elif v is not None or k in ("wait_reason", "error"):
                 self._state[k] = v
 
@@ -304,7 +398,6 @@ class AgentSession:
             }
             return
 
-        # No clarification needed -> confirm stack
         stack_resp = await self.llm.generate(
             messages=[LLMMessage(role="user", content=json.dumps(req_dict))],
             system_prompt="Summarize the technology stack.",
@@ -430,7 +523,6 @@ class AgentSession:
             }
             return
 
-        # Follow-up modification message
         combined = f"{self._state.get('user_request', '')}\n\nUser modification: {normalized_input}"
         async for ev in self._run_direct_analysis(combined):
             yield ev

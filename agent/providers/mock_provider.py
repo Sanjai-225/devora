@@ -89,6 +89,11 @@ class MockLLMProvider(LLMProvider):
         if output_schema is ClarificationResult:
             return self._analyze_clarifications(user_text)
 
+        from agent.models.design import DesignSpecification
+
+        if output_schema is DesignSpecification:
+            return DesignSpecification()
+
         # Fallback generic instantiation
         return output_schema.model_validate({})
 

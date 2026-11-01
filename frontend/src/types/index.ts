@@ -136,6 +136,55 @@ export interface Project {
   deployment_provider?: string | null;
 }
 
+export interface ColorPalette {
+  primary: string;
+  secondary: string;
+  accent: string;
+  background: string;
+  surface: string;
+  text: string;
+  text_secondary: string;
+}
+
+export interface TypographySpec {
+  heading_font: string;
+  body_font: string;
+  mono_font: string;
+  scale: string;
+}
+
+export interface DesignSpecification {
+  color_palette: ColorPalette;
+  typography: TypographySpec;
+  spacing_scale: string;
+  border_radius: string;
+  component_style: string;
+  layout_pattern: string;
+  dark_mode: boolean;
+  pages_designed: string[];
+  navigation_style: string;
+}
+
+export interface DesignVersion {
+  id: string;
+  project_id: string;
+  version_number: number;
+  version_tag: string;
+  label: string;
+  prompt: string;
+  summary_of_changes: string;
+  design_spec: DesignSpecification;
+  prototype_code: string;
+  approved: boolean;
+  created_at: string;
+}
+
+export interface DesignVersionListResponse {
+  versions: DesignVersion[];
+  active_version_id?: string | null;
+  approved_version_id?: string | null;
+}
+
 export interface ProjectListResponse {
   projects: Project[];
   total: number;

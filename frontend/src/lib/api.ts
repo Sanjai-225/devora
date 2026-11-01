@@ -5,6 +5,8 @@
 import type {
   AgentStateResponse,
   ConversationMessage,
+  DesignVersion,
+  DesignVersionListResponse,
   Project,
   ProjectListResponse,
 } from '@/types';
@@ -123,6 +125,72 @@ export const api = {
     request<{ messages: ConversationMessage[]; total: number }>(
       `/projects/${projectId}/conversations?limit=${limit}`,
       {},
+      token,
+    ),
+
+  // Optional Design System (Phase 3)
+  setDesignChoice: (
+    token: string,
+    projectId: string,
+    choice: 'design_first' | 'direct_code',
+  ) =>
+    request<{
+      project_id: string;
+      design_choice: 'design_first' | 'direct_code';
+      status: string;
+      current_stage: string;
+      next_route: string;
+      message: string;
+    }>(
+      `/projects/${projectId}/design/choice`,
+      { method: 'POST', body: JSON.stringify({ choice }) },
+      token,
+    ),
+  generateDesign: (token: string, projectId: string) =>
+    request<DesignVersion>(
+      `/projects/${projectId}/design/generate`,
+      { method: 'POST' },
+      token,
+    ),
+  modifyDesign: (
+    token: string,
+    projectId: string,
+    prompt: string,
+    tokenOverrides?: Record<string, unknown>,
+  ) =>
+    request<DesignVersion>(
+      `/projects/${projectId}/design/modify`,
+      {
+        method: 'POST',
+        body: JSON.stringify({
+          prompt,
+          token_overrides: tokenOverrides,
+        }),
+      },
+      token,
+    ),
+  listDesignVersions: (token: string, projectId: string) =>
+    request<DesignVersionListResponse>(
+      `/projects/${projectId}/design/versions`,
+      {},
+      token,
+    ),
+  getDesignVersion: (token: string, projectId: string, versionId: string) =>
+    request<DesignVersion>(
+      `/projects/${projectId}/design/versions/${versionId}`,
+      {},
+      token,
+    ),
+  approveDesignVersion: (token: string, projectId: string, versionId: string) =>
+    request<DesignVersion>(
+      `/projects/${projectId}/design/versions/${versionId}/approve`,
+      { method: 'POST' },
+      token,
+    ),
+  restoreDesignVersion: (token: string, projectId: string, versionId: string) =>
+    request<DesignVersion>(
+      `/projects/${projectId}/design/versions/${versionId}/restore`,
+      { method: 'POST' },
       token,
     ),
 };
