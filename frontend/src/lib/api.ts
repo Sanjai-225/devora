@@ -2,6 +2,13 @@
  * API client for communicating with the Devora backend.
  */
 
+import type {
+  AgentStateResponse,
+  ConversationMessage,
+  Project,
+  ProjectListResponse,
+} from '@/types';
+
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api/v1';
 
 class ApiError extends Error {
@@ -48,6 +55,12 @@ async function request<T>(
   return res.json();
 }
 
+export function getWebSocketUrl(projectId: string, token?: string | null): string {
+  const wsBase = API_BASE.replace(/^http/, 'ws');
+  const qs = token ? `?token=${encodeURIComponent(token)}` : '';
+  return `${wsBase}/projects/${projectId}/agent/ws${qs}`;
+}
+
 export const api = {
   // Health
   health: () => request<{ status: string; version: string }>('/health'),
@@ -65,19 +78,53 @@ export const api = {
   // Projects
   listProjects: (token: string, params?: Record<string, string>) => {
     const qs = params ? '?' + new URLSearchParams(params).toString() : '';
-    return request<{ projects: Record<string, unknown>[]; total: number; has_more: boolean }>(
+    return request<ProjectListResponse>(
       `/projects${qs}`, {}, token,
     );
   },
   createProject: (token: string, data: { name: string; description: string }) =>
-    request<Record<string, unknown>>('/projects', { method: 'POST', body: JSON.stringify(data) }, token),
+    request<Project>('/projects', { method: 'POST', body: JSON.stringify(data) }, token),
   getProject: (token: string, id: string) =>
-    request<Record<string, unknown>>(`/projects/${id}`, {}, token),
+    request<Project>(`/projects/${id}`, {}, token),
   updateProject: (token: string, id: string, data: Record<string, unknown>) =>
-    request<Record<string, unknown>>(`/projects/${id}`, { method: 'PUT', body: JSON.stringify(data) }, token),
+    request<Project>(`/projects/${id}`, { method: 'PUT', body: JSON.stringify(data) }, token),
   deleteProject: (token: string, id: string) =>
     request<void>(`/projects/${id}`, { method: 'DELETE' }, token),
+
+  // Agent & Requirement Analysis (Phase 2)
+  startAgent: (token: string, projectId: string, message?: string) =>
+    request<AgentStateResponse>(
+      `/projects/${projectId}/agent/start`,
+      { method: 'POST', body: JSON.stringify(message ? { message } : {}) },
+      token,
+    ),
+  sendAgentMessage: (
+    token: string,
+    projectId: string,
+    payload: {
+      type: 'user_message' | 'clarification_response' | 'user_approval';
+      content?: string;
+      answers?: Record<string, string>;
+      approved?: boolean;
+      stage?: string;
+      choice?: string;
+    },
+  ) =>
+    request<AgentStateResponse>(
+      `/projects/${projectId}/agent/message`,
+      { method: 'POST', body: JSON.stringify(payload) },
+      token,
+    ),
+  getAgentState: (token: string, projectId: string) =>
+    request<AgentStateResponse>(`/projects/${projectId}/agent/state`, {}, token),
+
+  // Conversations
+  getConversations: (token: string, projectId: string, limit = 100) =>
+    request<{ messages: ConversationMessage[]; total: number }>(
+      `/projects/${projectId}/conversations?limit=${limit}`,
+      {},
+      token,
+    ),
 };
 
 export { ApiError };
-

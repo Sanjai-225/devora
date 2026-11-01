@@ -44,6 +44,8 @@ def _project_to_response(data: dict) -> ProjectResponse:
         preview_status=data.get("preview_status", PreviewStatus.STOPPED),
         workspace_id=data.get("workspace_id"),
         current_agent_stage=data.get("current_agent_stage"),
+        requirements=data.get("requirements"),
+        clarification_questions=data.get("clarification_questions"),
         confirmed_stack=data.get("confirmed_stack"),
         plan_approved=data.get("plan_approved", False),
         github_repo=data.get("github_repo"),
@@ -65,6 +67,9 @@ async def create_project(user_id: str, request: CreateProjectRequest) -> Project
         "status": ProjectStatus.DRAFT,
         "design_choice": DesignChoice.PENDING,
         "preview_status": PreviewStatus.STOPPED,
+        "requirements": None,
+        "clarification_questions": [],
+        "confirmed_stack": None,
         "plan_approved": False,
         "created_at": now,
         "updated_at": now,
@@ -114,7 +119,6 @@ async def list_projects(
             query = query.where("status", "==", status_filter)
         query = query.order_by("updated_at", direction="DESCENDING")
 
-        # Get total count (Firestore doesn't have native count in all SDKs)
         all_docs = list(query.stream())
         total = len(all_docs)
         paged = all_docs[offset : offset + limit]
@@ -186,4 +190,3 @@ async def delete_project(project_id: str, user_id: str) -> bool:
         del _dev_projects[project_id]
         logger.info(f"Project {project_id} deleted from memory")
         return True
-

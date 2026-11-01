@@ -10,6 +10,8 @@ import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
+import { useAuth } from '@/contexts/auth-context';
+import { api } from '@/lib/api';
 import { Sparkles, Check, Globe } from 'lucide-react';
 
 const FRAMEWORKS = [
@@ -92,6 +94,7 @@ function StackSection({
 
 export default function CreateWebsitePage() {
   const router = useRouter();
+  const { getToken } = useAuth();
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [loading, setLoading] = useState(false);
@@ -114,9 +117,49 @@ export default function CreateWebsitePage() {
     e.preventDefault();
     if (!name.trim() || !description.trim()) return;
     setLoading(true);
-    // TODO: Call backend API to create project
-    await new Promise((r) => setTimeout(r, 1000));
-    router.push('/projects');
+
+    const stackHint = [
+      `Frameworks: ${Array.from(selectedFrameworks).join(', ')}`,
+      `Styling: ${Array.from(selectedStyling).join(', ')}`,
+      `Backend: ${Array.from(selectedBackend).join(', ')}`,
+      selectedAuth.size > 0 ? `Auth: ${Array.from(selectedAuth).join(', ')}` : '',
+    ]
+      .filter(Boolean)
+      .join(' | ');
+
+    const fullDescription = `${description.trim()}\n\n[Preferred Stack: ${stackHint}]`;
+
+    try {
+      const token = (await getToken()) || 'dev-token';
+      const created = await api.createProject(token, {
+        name: name.trim(),
+        description: fullDescription,
+      });
+      await api.startAgent(token, created.id, fullDescription);
+      router.push(`/projects/${created.id}`);
+    } catch {
+      // Fallback for offline/static preview mode: store in sessionStorage and route to synthesis
+      const fallbackId = `proj-${Date.now().toString(36)}`;
+      if (typeof window !== 'undefined') {
+        sessionStorage.setItem(
+          `devora_project_${fallbackId}`,
+          JSON.stringify({
+            id: fallbackId,
+            name: name.trim(),
+            description: fullDescription,
+            stack: {
+              framework: Array.from(selectedFrameworks)[0] || 'nextjs',
+              styling: Array.from(selectedStyling)[0] || 'tailwind',
+              backend: Array.from(selectedBackend)[0] || 'nextjs_api',
+              auth: Array.from(selectedAuth)[0] || 'email_password',
+            },
+          }),
+        );
+      }
+      router.push(`/projects/${fallbackId}`);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -142,7 +185,7 @@ export default function CreateWebsitePage() {
               <div className="grid grid-cols-2 gap-4">
                 <Input
                   label="Project Name *"
-                  placeholder="My Awesome Website"
+                  placeholder="Novastride Fleet"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   required
@@ -171,7 +214,7 @@ export default function CreateWebsitePage() {
                   </span>
                 </div>
                 <span className="text-[10px] font-mono bg-surface-3 text-text-secondary px-2 py-0.5 rounded">
-                  Autonomous Engine v0.1
+                  Autonomous Engine v0.2
                 </span>
               </div>
               <textarea
@@ -204,7 +247,10 @@ export default function CreateWebsitePage() {
                 <button
                   key={t.label}
                   type="button"
-                  onClick={() => setDescription(t.label)}
+                  onClick={() => {
+                    if (!name) setName(t.label.split(' with ')[0]);
+                    setDescription(t.label);
+                  }}
                   className="w-full flex items-center gap-3 px-4 py-2.5 bg-surface-2 border border-border rounded-lg text-sm text-text-secondary hover:text-text-primary hover:border-border-hover transition-colors text-left"
                 >
                   <span>{t.icon}</span>
@@ -260,7 +306,7 @@ export default function CreateWebsitePage() {
 
           {/* Submit */}
           <div className="flex items-center justify-end gap-4 pt-2">
-            <Button variant="secondary" icon={<span>📋</span>}>Save Draft</Button>
+            <Button variant="secondary" type="button" icon={<span>📋</span>}>Save Draft</Button>
             <Button type="submit" variant="primary" size="lg" loading={loading}>
               Generate & Analyze Requirements →
             </Button>
@@ -314,4 +360,3 @@ export default function CreateWebsitePage() {
     </div>
   );
 }
-

@@ -35,6 +35,85 @@ export interface User {
   };
 }
 
+export interface PageDefinition {
+  name: string;
+  route: string;
+  description: string;
+  components: string[];
+  is_authenticated: boolean;
+}
+
+export interface FeatureDefinition {
+  name: string;
+  description: string;
+  priority: 'must_have' | 'should_have' | 'nice_to_have' | string;
+  requires_backend: boolean;
+}
+
+export interface TechnologyStack {
+  framework: string;
+  styling: string;
+  backend: string;
+  database: string;
+  auth_methods: string[];
+  additional_libraries: string[];
+  language: string;
+}
+
+export interface DesignPreferences {
+  color_scheme?: string | null;
+  style?: string | null;
+  has_logo: boolean;
+  reference_sites: string[];
+}
+
+export interface ClarificationQuestion {
+  id: string;
+  question: string;
+  why: string;
+  options: string[];
+  default?: string | null;
+}
+
+export interface StructuredRequirements {
+  project_name: string;
+  project_type: string;
+  summary: string;
+  pages: PageDefinition[];
+  features: FeatureDefinition[];
+  technology_stack: TechnologyStack;
+  design_preferences: DesignPreferences;
+  complexity: 'simple' | 'moderate' | 'complex' | string;
+  has_sample_data: boolean;
+  target_audience?: string | null;
+  assumptions_made: string[];
+}
+
+export interface ConversationMessage {
+  id: string;
+  project_id: string;
+  role: 'user' | 'agent' | 'system';
+  content: string;
+  timestamp: string;
+  stage: string;
+  metadata?: Record<string, unknown> | null;
+}
+
+export interface AgentStateResponse {
+  project_id: string;
+  status: ProjectStatus;
+  current_stage: string;
+  requirements?: StructuredRequirements | null;
+  clarification_questions: ClarificationQuestion[];
+  confirmed_stack?: Record<string, unknown> | null;
+  design_choice: DesignChoice;
+  should_wait_for_user: boolean;
+  wait_reason?: string | null;
+  latest_response?: string | null;
+  messages: ConversationMessage[];
+  events: Record<string, unknown>[];
+}
+
 export interface Project {
   id: string;
   user_id: string;
@@ -48,6 +127,8 @@ export interface Project {
   preview_status: PreviewStatus;
   workspace_id?: string | null;
   current_agent_stage?: string | null;
+  requirements?: StructuredRequirements | null;
+  clarification_questions?: ClarificationQuestion[] | null;
   confirmed_stack?: Record<string, string> | null;
   plan_approved: boolean;
   github_repo?: string | null;
@@ -94,4 +175,3 @@ export const STATUS_COLORS: Record<ProjectStatus, { text: string; bg: string; bo
   failed: { text: 'text-red', bg: 'bg-red-muted', border: 'border-red-border', dot: 'bg-red' },
   archived: { text: 'text-text-muted', bg: 'bg-surface-3', border: 'border-border', dot: 'bg-text-muted' },
 };
-

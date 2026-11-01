@@ -5,9 +5,9 @@ Phase 2 implements: requirement_analysis → clarification → stack_confirmatio
 """
 
 import logging
-from typing import Optional
+import os
+from typing import Any, Optional
 
-from langgraph.checkpoint.sqlite.aio import AsyncSqliteSaver
 from langgraph.graph import END, StateGraph
 
 from agent.providers.llm_provider import LLMProvider
@@ -23,14 +23,14 @@ logger = logging.getLogger(__name__)
 
 
 def _should_clarify(state: AgentState) -> str:
-    """Conditional edge: route to clarification or stack confirmation."""
+    """Conditional edge: route to clarification pause or stack confirmation."""
     if state.get("needs_clarification") and state.get("clarification_questions"):
         return "ask_clarification"
     return "confirm_stack"
 
 
 def _after_answer(state: AgentState) -> str:
-    """Conditional edge: after processing answers, go back to clarification check or confirm."""
+    """Conditional edge: after processing answers, go to stack confirmation."""
     if state.get("needs_clarification"):
         return "check_clarification"
     return "confirm_stack"
@@ -48,32 +48,30 @@ def build_requirement_graph(llm: LLMProvider) -> StateGraph:
 
     Flow:
     START → analyze_requirements → check_clarification
-        → (needs_clarification?) → ask_clarification → INTERRUPT (wait for user)
-        → process_answers → check_clarification (loop)
-        → (no clarification needed) → confirm_stack → INTERRUPT (wait for user)
-        → END
+        → (needs_clarification?) → interrupt before process_answers (wait for user)
+        → process_answers → confirm_stack → END (wait for user confirmation)
+        → (no clarification needed) → confirm_stack → END (wait for user confirmation)
     """
 
     graph = StateGraph(AgentState)
 
     # ── Add nodes ───────────────────────────────────────────────────
-    # Each node wraps the actual function to inject the LLM provider
-    graph.add_node(
-        "analyze_requirements",
-        lambda state: analyze_requirements(state, llm),
-    )
-    graph.add_node(
-        "check_clarification",
-        lambda state: check_clarification(state, llm),
-    )
-    graph.add_node(
-        "process_answers",
-        lambda state: process_answers(state, llm),
-    )
-    graph.add_node(
-        "confirm_stack",
-        lambda state: confirm_stack(state, llm),
-    )
+    async def _analyze_node(state: AgentState) -> dict:
+        return await analyze_requirements(state, llm)
+
+    async def _clarify_node(state: AgentState) -> dict:
+        return await check_clarification(state, llm)
+
+    async def _process_answers_node(state: AgentState) -> dict:
+        return await process_answers(state, llm)
+
+    async def _confirm_stack_node(state: AgentState) -> dict:
+        return await confirm_stack(state, llm)
+
+    graph.add_node("analyze_requirements", _analyze_node)
+    graph.add_node("check_clarification", _clarify_node)
+    graph.add_node("process_answers", _process_answers_node)
+    graph.add_node("confirm_stack", _confirm_stack_node)
 
     # ── Set entry point ─────────────────────────────────────────────
     graph.set_entry_point("analyze_requirements")
@@ -85,13 +83,20 @@ def build_requirement_graph(llm: LLMProvider) -> StateGraph:
         "check_clarification",
         _should_clarify,
         {
-            "ask_clarification": END,  # Pause for user input
+            "ask_clarification": "process_answers",  # Interrupted before process_answers to wait for user answers
             "confirm_stack": "confirm_stack",
         },
     )
 
-    # After user provides answers and we resume:
-    graph.add_edge("process_answers", "check_clarification")
+    # After user provides answers and process_answers runs, route to confirm_stack:
+    graph.add_conditional_edges(
+        "process_answers",
+        _after_answer,
+        {
+            "check_clarification": "check_clarification",
+            "confirm_stack": "confirm_stack",
+        },
+    )
 
     # After stack confirmation:
     graph.add_conditional_edges(
@@ -106,24 +111,32 @@ def build_requirement_graph(llm: LLMProvider) -> StateGraph:
 async def create_agent_workflow(
     llm: LLMProvider,
     checkpoint_path: str = "checkpoints/agent.db",
-) -> tuple:
-    """Create the compiled agent workflow with SQLite checkpointer.
-    
+) -> tuple[Any, Any]:
+    """Create the compiled agent workflow with SQLite checkpointer (or MemorySaver fallback).
+
     Returns:
         tuple: (compiled_graph, checkpointer)
     """
-    import os
-    os.makedirs(os.path.dirname(checkpoint_path), exist_ok=True)
+    checkpointer = None
+    try:
+        from langgraph.checkpoint.sqlite.aio import AsyncSqliteSaver
 
-    checkpointer = AsyncSqliteSaver.from_conn_string(checkpoint_path)
-    await checkpointer.setup()
+        if checkpoint_path != ":memory:":
+            os.makedirs(os.path.dirname(checkpoint_path) or ".", exist_ok=True)
+        checkpointer = AsyncSqliteSaver.from_conn_string(checkpoint_path)
+        await checkpointer.setup()
+        logger.info(f"Initialized AsyncSqliteSaver at {checkpoint_path}")
+    except Exception as e:
+        logger.warning(f"AsyncSqliteSaver unavailable ({e}), falling back to MemorySaver")
+        from langgraph.checkpoint.memory import MemorySaver
+
+        checkpointer = MemorySaver()
 
     graph = build_requirement_graph(llm)
     compiled = graph.compile(
         checkpointer=checkpointer,
-        interrupt_before=["confirm_stack"],  # Pause before stack confirmation for display
+        interrupt_before=["process_answers"],  # Pause before processing answers when clarification is needed
     )
 
-    logger.info("Agent workflow compiled with SQLite checkpointer")
+    logger.info("Agent workflow compiled successfully")
     return compiled, checkpointer
-
