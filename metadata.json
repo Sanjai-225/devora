@@ -1,0 +1,6 @@
+{
+  "name": "Devora — Autonomous Web Development Agent",
+  "description": "AI-powered website development platform where users describe websites in natural language and Devora analyzes requirements, designs prototypes, builds, tests, and packages full-stack web applications.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

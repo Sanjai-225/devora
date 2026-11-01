@@ -1,18 +1,25 @@
 """Devora Backend — Firebase initialization."""
 
 import logging
-from typing import Optional
+from typing import Any, Optional
 
-import firebase_admin
-from firebase_admin import auth as firebase_auth
-from firebase_admin import credentials, firestore
+try:
+    import firebase_admin
+    from firebase_admin import auth as firebase_auth
+    from firebase_admin import credentials, firestore
+except ImportError:
+    firebase_admin = None  # type: ignore[assignment]
+    firebase_auth = None  # type: ignore[assignment]
+    credentials = None  # type: ignore[assignment]
+    firestore = None  # type: ignore[assignment]
 
 from app.core.config import settings
 
 logger = logging.getLogger(__name__)
 
-_firebase_app: Optional[firebase_admin.App] = None
+_firebase_app: Optional[Any] = None
 _firestore_client = None
+
 
 
 def init_firebase() -> None:

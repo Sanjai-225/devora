@@ -10,8 +10,8 @@
 | 3 | Optional Design System | ✅ COMPLETE | Phase 2 |
 | 4 | Configuration & Planning | ✅ COMPLETE | Phase 2 |
 | 5 | Workspace & Execution | ✅ COMPLETE | Phase 1 |
-| 6 | Code Generation & Editing | 🔄 NEXT | Phase 4, 5 |
-| 7 | Testing & Verification | 🔲 | Phase 6 |
+| 6 | Code Generation & Editing | ✅ COMPLETE | Phase 4, 5 |
+| 7 | Testing & Verification | 🔄 NEXT | Phase 6 |
 | 8 | Download & Project Mgmt | 🔲 | Phase 6 |
 | 9 | GitHub & Deployment | 🔲 | Phase 8 |
 | 10 | Security, Polish & Release | 🔲 | All |
@@ -162,27 +162,27 @@
 
 ---
 
-## Phase 6 — Code Generation & Editing 🔄 NEXT
+## Phase 6 — Code Generation & Editing ✅
 
 **Deliverable:** Devora can generate a real website and modify it through follow-up instructions.
 
-- [ ] Implement workspace tool registry
-- [ ] Implement file tools (create, read, write, delete, list, search)
-- [ ] Implement command tools (run, install deps, build)
-- [ ] Implement code generation LangGraph node
-- [ ] Implement incremental editing node
-- [ ] Implement dependency installation
-- [ ] Implement Git checkpoint creation
-- [ ] Implement project workspace page (matching Stitch design)
-- [ ] Implement file explorer panel
-- [ ] Implement code diff view
-- [ ] Test: full project generation (simple portfolio site)
-- [ ] Test: incremental modification
-- [ ] Test: Git checkpoint and restore
+- [x] Implement workspace tool registry
+- [x] Implement file tools (create, read, write, delete, list, search)
+- [x] Implement command tools (run, install deps, build)
+- [x] Implement code generation LangGraph node
+- [x] Implement incremental editing node
+- [x] Implement dependency installation
+- [x] Implement Git checkpoint creation
+- [x] Implement project workspace page (matching Stitch design)
+- [x] Implement file explorer panel
+- [x] Implement code diff view
+- [x] Test: full project generation (simple portfolio site)
+- [x] Test: incremental modification
+- [x] Test: Git checkpoint and restore
 
 ---
 
-## Phase 7 — Testing & Verification 🔲
+## Phase 7 — Testing & Verification 🔄 NEXT
 
 **Deliverable:** Devora can test the generated website and report genuine results.
 
@@ -258,6 +258,8 @@
 | 2026-11-01 | 3 | Optional Design System: DesignSpecification & prototype models, design workflow nodes (select_design_workflow, generate_initial_design, modify_design_version), backend design service & REST endpoints, Workflow Decision page, 3-pane Design Studio with SandpackPreview (Desktop/Tablet/Mobile viewports, live token editor, version history rollback, approval flow), and Phase 3 automated test suite |
 | 2026-11-01 | 4 | Configuration & Planning: ConfigurationDetectionResult & ImplementationPlan models, config_nodes (detect_configuration_requirements, mask_secret_value, validate_and_apply_configuration, generate_implementation_plan, approve_implementation_plan), server-side secret vault & Firestore metadata persistence, Configuration & Implementation Plan page matching Stitch design, and Phase 4 automated test suite |
 | 2026-11-01 | 5 | Workspace & Execution + Free-Tier Hosting: ExecutionProvider & LocalProcessManager (isolated workspaces in `/tmp/devora/workspaces`, strict path traversal guard, port allocation `4100-4999`, PID-tracked process lifecycle, timeout-bounded command execution with secret redaction), Workspace REST API + 3-column Workspace UI, Vercel (`frontend/vercel.json`) & Render Free-Tier Blueprint (`render.yaml`), and Phase 5 automated test suite |
+| 2026-11-01 | 6 | Code Generation, Surgical Incremental Editing & Multi-Agent Continuity: WorkspaceToolRegistry (`create_file`, `read_file`, `write_file`, `delete_file`, `list_files`, `search_files`, `run_command`, `install_dependencies`, `run_build`), `codegen_nodes.py` (`generate_project_code`, `apply_incremental_edit` preserving untouched files with unified diffs, real Git checkpoint creation/listing/rollback), Workspace Diff Viewer & Deployment Confirmation Gate UI, `PROJECT_CURRENT_STATUS.md` + `COMMIT_AND_CHANGE_LOG.md`, and Phase 6 automated test suite |
+
 
 
 

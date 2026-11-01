@@ -1,22 +1,31 @@
-"""Devora Backend — Phase 5 Workspace & Execution API routes."""
+"""Devora Backend — Phase 5 & Phase 6 Workspace, Execution, Codegen & Git Checkpoint API routes."""
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 
 from app.middleware.auth import AuthenticatedUser, get_current_user
 from app.models.schemas import (
+    CodeGenerationRequest,
+    CodeGenerationResponse,
+    CreateCheckpointRequest,
+    DeploymentConfirmationRequest,
+    DeploymentConfirmationResponse,
+    GitCheckpointSchema,
+    IncrementalEditRequest,
+    IncrementalEditResponse,
     WorkspaceCommandRequest,
     WorkspaceCommandResponse,
     WorkspaceFileReadResponse,
     WorkspaceFileSchema,
     WorkspaceFileWriteRequest,
     WorkspaceLogSchema,
+    WorkspaceSearchMatchSchema,
     WorkspaceStatusResponse,
 )
 from app.providers.local_process_manager import (
     PathTraversalError,
     get_execution_provider,
 )
-from app.services import workspace_service
+from app.services import codegen_service, workspace_service
 
 router = APIRouter(prefix="/projects/{project_id}/workspace", tags=["workspace"])
 
@@ -124,7 +133,8 @@ async def list_workspace_files(
     try:
         provider = get_execution_provider()
         entries = await provider.list_files(project_id, directory=directory)
-        return [WorkspaceFileSchema(**e.model_dump()) for e in entries]
+        visible = [e for e in entries if not e.path.startswith(".git/")]
+        return [WorkspaceFileSchema(**e.model_dump()) for e in visible]
     except PathTraversalError as e:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=str(e))
 
@@ -166,6 +176,153 @@ async def write_workspace_file(
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=str(e))
 
 
+@router.delete("/files/content", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_workspace_file(
+    project_id: str,
+    path: str = Query(..., description="Relative file path inside workspace"),
+    current_user: AuthenticatedUser = Depends(get_current_user),
+):
+    """Delete a file inside the isolated workspace after path traversal validation."""
+    try:
+        provider = get_execution_provider()
+        deleted = await provider.delete_file(project_id, path)
+        if not deleted:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="File not found")
+    except PathTraversalError as e:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=str(e))
+
+
+@router.get("/search", response_model=list[WorkspaceSearchMatchSchema])
+async def search_workspace_files(
+    project_id: str,
+    q: str = Query(..., min_length=1, description="Search query"),
+    pattern: str = Query("*", description="Optional glob pattern e.g. *.tsx"),
+    current_user: AuthenticatedUser = Depends(get_current_user),
+):
+    """Search across all files in the isolated workspace."""
+    try:
+        matches = await codegen_service.search_project_workspace_files(
+            project_id=project_id,
+            user_id=current_user.uid,
+            query=q,
+            file_pattern=pattern,
+        )
+        return [WorkspaceSearchMatchSchema(**m.model_dump()) for m in matches]
+    except PathTraversalError as e:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=str(e))
+
+
+@router.post("/generate", response_model=CodeGenerationResponse)
+async def generate_workspace_code(
+    project_id: str,
+    payload: CodeGenerationRequest = CodeGenerationRequest(),
+    current_user: AuthenticatedUser = Depends(get_current_user),
+):
+    """Generate full project code from plan/requirements and create an initial Git checkpoint."""
+    try:
+        res = await codegen_service.generate_project_workspace_code(
+            project_id=project_id,
+            user_id=current_user.uid,
+            template_type=payload.template_type,
+        )
+        return CodeGenerationResponse(**res.model_dump())
+    except PathTraversalError as e:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=str(e))
+
+
+@router.post("/edit", response_model=IncrementalEditResponse)
+async def edit_workspace_code(
+    project_id: str,
+    payload: IncrementalEditRequest,
+    current_user: AuthenticatedUser = Depends(get_current_user),
+):
+    """Apply a surgical incremental edit to targeted file(s), return unified diffs, and create a Git checkpoint."""
+    try:
+        res = await codegen_service.edit_project_workspace_code(
+            project_id=project_id,
+            user_id=current_user.uid,
+            prompt=payload.prompt,
+            target_files=payload.target_files,
+        )
+        return IncrementalEditResponse(**res.model_dump())
+    except PathTraversalError as e:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=str(e))
+
+
+@router.get("/checkpoints", response_model=list[GitCheckpointSchema])
+async def list_workspace_checkpoints(
+    project_id: str,
+    current_user: AuthenticatedUser = Depends(get_current_user),
+):
+    """List Git commit checkpoints recorded inside the project workspace."""
+    try:
+        records = await codegen_service.list_project_checkpoints(
+            project_id=project_id,
+            user_id=current_user.uid,
+        )
+        return [GitCheckpointSchema(**r.model_dump()) for r in records]
+    except PathTraversalError as e:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=str(e))
+
+
+@router.post("/checkpoints", response_model=GitCheckpointSchema, status_code=status.HTTP_201_CREATED)
+async def create_workspace_checkpoint(
+    project_id: str,
+    payload: CreateCheckpointRequest,
+    current_user: AuthenticatedUser = Depends(get_current_user),
+):
+    """Create a manual Git commit checkpoint inside the isolated project workspace."""
+    try:
+        chk = await codegen_service.create_manual_checkpoint(
+            project_id=project_id,
+            user_id=current_user.uid,
+            message=payload.message,
+            tag=payload.tag,
+        )
+        return GitCheckpointSchema(**chk.model_dump())
+    except PathTraversalError as e:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=str(e))
+
+
+@router.post("/checkpoints/{commit_sha}/restore", response_model=GitCheckpointSchema)
+async def restore_workspace_checkpoint(
+    project_id: str,
+    commit_sha: str,
+    current_user: AuthenticatedUser = Depends(get_current_user),
+):
+    """Restore workspace files to a previous Git checkpoint SHA."""
+    try:
+        chk = await codegen_service.restore_project_checkpoint(
+            project_id=project_id,
+            user_id=current_user.uid,
+            commit_sha=commit_sha,
+        )
+        return GitCheckpointSchema(**chk.model_dump())
+    except ValueError as e:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
+    except RuntimeError as e:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
+    except PathTraversalError as e:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=str(e))
+
+
+@router.post("/deploy-confirm", response_model=DeploymentConfirmationResponse)
+async def confirm_workspace_deployment(
+    project_id: str,
+    payload: DeploymentConfirmationRequest,
+    current_user: AuthenticatedUser = Depends(get_current_user),
+):
+    """Verify explicit user confirmation and Free-Tier readiness before any public deployment."""
+    try:
+        return await codegen_service.verify_deployment_confirmation(
+            project_id=project_id,
+            user_id=current_user.uid,
+            payload=payload,
+        )
+    except ValueError as e:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
+
+
 @router.post("/exec", response_model=WorkspaceCommandResponse)
 async def execute_workspace_command(
     project_id: str,
@@ -198,3 +355,4 @@ async def get_workspace_logs(
         return [WorkspaceLogSchema(**lg.model_dump()) for lg in logs]
     except PathTraversalError as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
+

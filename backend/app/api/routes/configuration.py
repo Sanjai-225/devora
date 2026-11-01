@@ -5,7 +5,7 @@ import logging
 from fastapi import APIRouter, Depends, HTTPException, status
 
 from app.api.routes.agent import get_agent_manager
-from app.core.auth import AuthenticatedUser, get_current_user
+from app.middleware.auth import AuthenticatedUser, get_current_user
 from app.models.schemas import (
     ConfigurationSaveRequest,
     ConfigurationStateResponse,

@@ -313,7 +313,96 @@ export const api = {
       },
       token,
     ),
+
+  // Code Generation, Incremental Surgical Editing & Git Checkpoints (Phase 6)
+  generateWorkspaceCode: (
+    token: string,
+    projectId: string,
+    templateType = 'portfolio',
+  ) =>
+    request<import('@/types').CodeGenerationResult>(
+      `/projects/${projectId}/workspace/generate`,
+      {
+        method: 'POST',
+        body: JSON.stringify({ template_type: templateType }),
+      },
+      token,
+    ),
+  editWorkspaceCode: (
+    token: string,
+    projectId: string,
+    prompt: string,
+    targetFiles?: string[],
+  ) =>
+    request<import('@/types').IncrementalEditResult>(
+      `/projects/${projectId}/workspace/edit`,
+      {
+        method: 'POST',
+        body: JSON.stringify({ prompt, target_files: targetFiles }),
+      },
+      token,
+    ),
+  searchWorkspaceFiles: (
+    token: string,
+    projectId: string,
+    query: string,
+    pattern = '*',
+  ) =>
+    request<import('@/types').WorkspaceSearchMatch[]>(
+      `/projects/${projectId}/workspace/search?q=${encodeURIComponent(query)}&pattern=${encodeURIComponent(pattern)}`,
+      {},
+      token,
+    ),
+  listWorkspaceCheckpoints: (token: string, projectId: string) =>
+    request<import('@/types').GitCheckpointRecord[]>(
+      `/projects/${projectId}/workspace/checkpoints`,
+      {},
+      token,
+    ),
+  createWorkspaceCheckpoint: (
+    token: string,
+    projectId: string,
+    message: string,
+    tag = 'manual',
+  ) =>
+    request<import('@/types').GitCheckpointRecord>(
+      `/projects/${projectId}/workspace/checkpoints`,
+      {
+        method: 'POST',
+        body: JSON.stringify({ message, tag }),
+      },
+      token,
+    ),
+  restoreWorkspaceCheckpoint: (
+    token: string,
+    projectId: string,
+    commitSha: string,
+  ) =>
+    request<import('@/types').GitCheckpointRecord>(
+      `/projects/${projectId}/workspace/checkpoints/${encodeURIComponent(commitSha)}/restore`,
+      { method: 'POST' },
+      token,
+    ),
+  confirmWorkspaceDeployment: (
+    token: string,
+    projectId: string,
+    payload: {
+      user_confirmed: boolean;
+      target_branch?: 'testing' | 'main';
+      frontend_provider?: string;
+      backend_provider?: string;
+    },
+  ) =>
+    request<import('@/types').DeploymentConfirmationResult>(
+      `/projects/${projectId}/workspace/deploy-confirm`,
+      {
+        method: 'POST',
+        body: JSON.stringify(payload),
+      },
+      token,
+    ),
 };
 
 export { ApiError };
+
 

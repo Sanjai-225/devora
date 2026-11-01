@@ -1,53 +1,8 @@
-# Dependencies
 node_modules/
-__pycache__/
-*.pyc
-.venv/
-venv/
-env/
-
-# Build outputs
-.next/
-out/
-dist/
 build/
-*.egg-info/
-
-# Environment files
-.env
-.env.local
-.env.production
-.env.*.local
-
-# IDE
-.vscode/
-.idea/
-*.swp
-*.swo
-
-# OS
-.DS_Store
-Thumbs.db
-
-# Firebase
-firebase-service-account.json
-firebase-adminsdk*.json
-
-# Testing
+dist/
 coverage/
-.pytest_cache/
-playwright-report/
-test-results/
-
-# Logs
+.DS_Store
 *.log
-logs/
-
-# Generated project workspaces
-workspaces/
-
-# Temporary
-tmp/
-temp/
-scratch/
-
+.env*
+!.env.example

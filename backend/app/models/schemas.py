@@ -369,6 +369,99 @@ class WorkspaceStatusResponse(BaseModel):
     updated_at: str
 
 
+class CodeGenerationRequest(BaseModel):
+    template_type: str = Field("portfolio", max_length=64)
+
+
+class IncrementalEditRequest(BaseModel):
+    prompt: str = Field(..., min_length=1, max_length=5000)
+    target_files: Optional[list[str]] = None
+
+
+class CreateCheckpointRequest(BaseModel):
+    message: str = Field(..., min_length=1, max_length=240)
+    tag: str = Field("manual", max_length=32)
+
+
+class GeneratedFileDiffSchema(BaseModel):
+    path: str
+    change_type: Literal["created", "modified", "deleted"] = "modified"
+    language: str = "typescript"
+    added_lines: int = 0
+    removed_lines: int = 0
+    unified_diff: str = ""
+    summary: str = ""
+
+
+class GitCheckpointSchema(BaseModel):
+    checkpoint_id: str
+    project_id: str
+    commit_sha: str
+    short_sha: str
+    message: str
+    tag: str = "checkpoint"
+    author: str = "Devora Agent"
+    files_changed: int = 0
+    created_at: str
+
+
+class WorkspaceSearchMatchSchema(BaseModel):
+    path: str
+    line_number: int
+    line_content: str
+    language: str = "plaintext"
+
+
+class CodeGenerationResponse(BaseModel):
+    project_id: str
+    project_name: str
+    template_type: str = "portfolio"
+    files_created: list[str] = Field(default_factory=list)
+    file_diffs: list[GeneratedFileDiffSchema] = Field(default_factory=list)
+    dependencies_installed: list[str] = Field(default_factory=list)
+    build_passed: bool = True
+    build_output: str = ""
+    checkpoint: Optional[GitCheckpointSchema] = None
+    summary: str = ""
+    generated_at: str
+
+
+class IncrementalEditResponse(BaseModel):
+    project_id: str
+    prompt: str
+    files_modified: list[str] = Field(default_factory=list)
+    files_untouched_count: int = 0
+    file_diffs: list[GeneratedFileDiffSchema] = Field(default_factory=list)
+    build_passed: bool = True
+    checkpoint: Optional[GitCheckpointSchema] = None
+    summary: str = ""
+    edited_at: str
+
+
+class DeploymentConfirmationRequest(BaseModel):
+    user_confirmed: bool = Field(
+        ...,
+        description="Must be True to confirm public deployment or branch promotion",
+    )
+    target_branch: Literal["testing", "main"] = "testing"
+    frontend_provider: str = "vercel_hobby_free"
+    backend_provider: str = "render_free_web_service"
+
+
+class DeploymentConfirmationResponse(BaseModel):
+    project_id: str
+    user_confirmed: bool
+    ready_for_deploy: bool
+    target_branch: str
+    frontend_provider: str
+    backend_provider: str
+    database_provider: str = "firebase_spark_free"
+    estimated_monthly_cost_usd: float = 0.0
+    latest_checkpoint_sha: str
+    verification_checklist: list[str] = Field(default_factory=list)
+    confirmed_at: str
+
+
 class ErrorResponse(BaseModel):
     error: dict = Field(
         ...,
@@ -383,7 +476,8 @@ class ErrorResponse(BaseModel):
 
 class HealthResponse(BaseModel):
     status: str = "ok"
-    version: str = "0.5.0"
+    version: str = "0.6.0"
     dev_mode: bool = False
     firebase_connected: bool = False
+
 

@@ -327,6 +327,75 @@ export interface WorkspaceStatus {
   updated_at: string;
 }
 
+export interface GeneratedFileDiff {
+  path: string;
+  change_type: 'created' | 'modified' | 'deleted';
+  language: string;
+  added_lines: number;
+  removed_lines: number;
+  unified_diff: string;
+  summary: string;
+}
+
+export interface GitCheckpointRecord {
+  checkpoint_id: string;
+  project_id: string;
+  commit_sha: string;
+  short_sha: string;
+  message: string;
+  tag: string;
+  author: string;
+  files_changed: number;
+  created_at: string;
+}
+
+export interface WorkspaceSearchMatch {
+  path: string;
+  line_number: number;
+  line_content: string;
+  language: string;
+}
+
+export interface CodeGenerationResult {
+  project_id: string;
+  project_name: string;
+  template_type: string;
+  files_created: string[];
+  file_diffs: GeneratedFileDiff[];
+  dependencies_installed: string[];
+  build_passed: boolean;
+  build_output: string;
+  checkpoint?: GitCheckpointRecord | null;
+  summary: string;
+  generated_at: string;
+}
+
+export interface IncrementalEditResult {
+  project_id: string;
+  prompt: string;
+  files_modified: string[];
+  files_untouched_count: number;
+  file_diffs: GeneratedFileDiff[];
+  build_passed: boolean;
+  checkpoint?: GitCheckpointRecord | null;
+  summary: string;
+  edited_at: string;
+}
+
+export interface DeploymentConfirmationResult {
+  project_id: string;
+  user_confirmed: boolean;
+  ready_for_deploy: boolean;
+  target_branch: string;
+  frontend_provider: string;
+  backend_provider: string;
+  database_provider: string;
+  estimated_monthly_cost_usd: number;
+  latest_checkpoint_sha: string;
+  verification_checklist: string[];
+  confirmed_at: string;
+}
+
 export interface ProjectListResponse {
   projects: Project[];
   total: number;

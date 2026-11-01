@@ -1,0 +1,545 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "Authenticated Devora user profile",
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$",
+          "description": "Firebase Auth UID"
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "maxLength": 254,
+          "description": "User email address"
+        },
+        "displayName": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100,
+          "description": "Display name"
+        },
+        "photoURL": {
+          "type": "string",
+          "maxLength": 1024,
+          "description": "Profile avatar URL"
+        },
+        "role": {
+          "type": "string",
+          "enum": ["individual", "team"],
+          "maxLength": 32,
+          "description": "Account tier role"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Creation timestamp"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Last update timestamp"
+        }
+      },
+      "required": ["uid", "email", "displayName", "role", "createdAt", "updatedAt"]
+    },
+    "Project": {
+      "title": "Project",
+      "description": "AI-generated website project owned by a user",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$",
+          "description": "Project document ID"
+        },
+        "userId": {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$",
+          "description": "Owner Firebase Auth UID"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100,
+          "description": "Project display name"
+        },
+        "description": {
+          "type": "string",
+          "maxLength": 10000,
+          "description": "Natural language website specification"
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "draft",
+            "analyzing",
+            "clarifying",
+            "designing",
+            "awaiting_design_approval",
+            "configuring",
+            "planning",
+            "awaiting_plan_approval",
+            "building",
+            "testing",
+            "repairing",
+            "ready",
+            "failed",
+            "archived"
+          ],
+          "maxLength": 40,
+          "description": "Current lifecycle status"
+        },
+        "designChoice": {
+          "type": "string",
+          "enum": ["design_first", "direct_code", "pending"],
+          "maxLength": 32,
+          "description": "Chosen synthesis workflow path"
+        },
+        "currentAgentStage": {
+          "type": "string",
+          "maxLength": 64,
+          "description": "Active LangGraph agent stage"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Creation timestamp"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Last update timestamp"
+        }
+      },
+      "required": [
+        "id",
+        "userId",
+        "name",
+        "description",
+        "status",
+        "designChoice",
+        "currentAgentStage",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "ConversationMessage": {
+      "title": "ConversationMessage",
+      "description": "Agent-user conversation message within a project",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$",
+          "description": "Message ID"
+        },
+        "projectId": {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$",
+          "description": "Parent project ID"
+        },
+        "userId": {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$",
+          "description": "Owner Firebase Auth UID"
+        },
+        "role": {
+          "type": "string",
+          "enum": ["user", "agent", "system"],
+          "maxLength": 16,
+          "description": "Message sender role"
+        },
+        "content": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 10000,
+          "description": "Message markdown body"
+        },
+        "stage": {
+          "type": "string",
+          "maxLength": 64,
+          "description": "Workflow stage when message was sent"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Message timestamp"
+        }
+      },
+      "required": ["id", "projectId", "userId", "role", "content", "stage", "createdAt"]
+    },
+    "DesignVersion": {
+      "title": "DesignVersion",
+      "description": "Versioned UI prototype and token specification for a project",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$",
+          "description": "Design version ID"
+        },
+        "projectId": {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$",
+          "description": "Parent project ID"
+        },
+        "userId": {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$",
+          "description": "Owner Firebase Auth UID"
+        },
+        "versionNumber": {
+          "type": "integer",
+          "description": "Sequential version number"
+        },
+        "versionTag": {
+          "type": "string",
+          "maxLength": 24,
+          "description": "Semantic version tag (e.g. v1.0)"
+        },
+        "label": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 120,
+          "description": "Human-readable version label"
+        },
+        "prompt": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 5000,
+          "description": "Instruction that produced this design version"
+        },
+        "primaryColor": {
+          "type": "string",
+          "maxLength": 32,
+          "description": "Primary hex color token"
+        },
+        "surfaceColor": {
+          "type": "string",
+          "maxLength": 32,
+          "description": "Surface hex color token"
+        },
+        "borderRadius": {
+          "type": "string",
+          "maxLength": 16,
+          "description": "Border radius token"
+        },
+        "prototypeCode": {
+          "type": "string",
+          "maxLength": 50000,
+          "description": "Generated React/TypeScript prototype code"
+        },
+        "approved": {
+          "type": "boolean",
+          "description": "Whether this design version is approved"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Creation timestamp"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Update timestamp"
+        }
+      },
+      "required": [
+        "id",
+        "projectId",
+        "userId",
+        "versionNumber",
+        "versionTag",
+        "label",
+        "prompt",
+        "primaryColor",
+        "surfaceColor",
+        "borderRadius",
+        "prototypeCode",
+        "approved",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "ProjectConfiguration": {
+      "title": "ProjectConfiguration",
+      "description": "Masked environment variable metadata for a project (raw secret values remain server-isolated)",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$",
+          "description": "Configuration record ID"
+        },
+        "projectId": {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$",
+          "description": "Parent project ID"
+        },
+        "userId": {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$",
+          "description": "Owner Firebase Auth UID"
+        },
+        "variableKey": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "description": "Environment variable key name (e.g. DATABASE_URL)"
+        },
+        "maskedValue": {
+          "type": "string",
+          "maxLength": 512,
+          "description": "Redacted/masked representation of the value"
+        },
+        "category": {
+          "type": "string",
+          "maxLength": 32,
+          "description": "Variable category (database, auth, payment, maps, email, ai, app_config)"
+        },
+        "scope": {
+          "type": "string",
+          "enum": ["server_only", "client_public"],
+          "maxLength": 32,
+          "description": "Runtime visibility scope"
+        },
+        "encryptionType": {
+          "type": "string",
+          "maxLength": 32,
+          "description": "Server vault encryption cipher (AES-256)"
+        },
+        "isRequired": {
+          "type": "boolean",
+          "description": "Whether this variable is required for project boot"
+        },
+        "isConfigured": {
+          "type": "boolean",
+          "description": "Whether a valid secret or value has been provided"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Last update timestamp"
+        }
+      },
+      "required": [
+        "id",
+        "projectId",
+        "userId",
+        "variableKey",
+        "maskedValue",
+        "category",
+        "scope",
+        "encryptionType",
+        "isRequired",
+        "isConfigured",
+        "updatedAt"
+      ]
+    },
+    "ImplementationPlan": {
+      "title": "ImplementationPlan",
+      "description": "Multi-step execution blueprint for generating and verifying a project",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$",
+          "description": "Implementation plan ID"
+        },
+        "projectId": {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$",
+          "description": "Parent project ID"
+        },
+        "userId": {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$",
+          "description": "Owner Firebase Auth UID"
+        },
+        "planTitle": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "description": "Human-readable title of the implementation plan"
+        },
+        "architectureSummary": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2000,
+          "description": "Architecture summary of the planned build"
+        },
+        "estimatedFilesCount": {
+          "type": "integer",
+          "description": "Total number of files to be generated"
+        },
+        "estimatedDurationSeconds": {
+          "type": "integer",
+          "description": "Estimated build duration in seconds"
+        },
+        "stepsCount": {
+          "type": "integer",
+          "description": "Number of execution steps in the plan"
+        },
+        "approved": {
+          "type": "boolean",
+          "description": "Whether the user has approved the plan for execution"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Creation timestamp"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Last update timestamp"
+        }
+      },
+      "required": [
+        "id",
+        "projectId",
+        "userId",
+        "planTitle",
+        "architectureSummary",
+        "estimatedFilesCount",
+        "estimatedDurationSeconds",
+        "stepsCount",
+        "approved",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "WorkspaceInstance": {
+      "title": "WorkspaceInstance",
+      "description": "Isolated execution workspace metadata, allocated port, PID, and free-tier hosting status for a project",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$",
+          "description": "Workspace instance ID"
+        },
+        "projectId": {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$",
+          "description": "Parent project ID"
+        },
+        "userId": {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$",
+          "description": "Owner Firebase Auth UID"
+        },
+        "status": {
+          "type": "string",
+          "enum": ["stopped", "starting", "running", "error"],
+          "maxLength": 24,
+          "description": "Current workspace runtime status"
+        },
+        "allocatedPort": {
+          "type": "integer",
+          "description": "Allocated local preview server port (4100-4999 or 0 when stopped)"
+        },
+        "processId": {
+          "type": "integer",
+          "description": "Tracked OS process ID (PID) or 0 when stopped"
+        },
+        "previewUrl": {
+          "type": "string",
+          "maxLength": 512,
+          "description": "Active preview URL"
+        },
+        "hostingTier": {
+          "type": "string",
+          "maxLength": 32,
+          "description": "Hosting tier identifier (e.g. render_free_tmp)"
+        },
+        "filesCount": {
+          "type": "integer",
+          "description": "Number of files in the isolated workspace"
+        },
+        "lastCommand": {
+          "type": "string",
+          "maxLength": 512,
+          "description": "Last executed command inside the workspace"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Creation timestamp"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Last update timestamp"
+        }
+      },
+      "required": [
+        "id",
+        "projectId",
+        "userId",
+        "status",
+        "allocatedPort",
+        "processId",
+        "previewUrl",
+        "hostingTier",
+        "filesCount",
+        "lastCommand",
+        "createdAt",
+        "updatedAt"
+      ]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/User" },
+      "description": "User account profiles isolated to the owner"
+    },
+    "/projects/{projectId}": {
+      "schema": { "$ref": "#/entities/Project" },
+      "description": "Website generation projects owned by a specific user"
+    },
+    "/projects/{projectId}/conversations/{messageId}": {
+      "schema": { "$ref": "#/entities/ConversationMessage" },
+      "description": "Conversation messages belonging to a project"
+    },
+    "/projects/{projectId}/designVersions/{versionId}": {
+      "schema": { "$ref": "#/entities/DesignVersion" },
+      "description": "Versioned UI design prototypes belonging to a project"
+    },
+    "/projects/{projectId}/configurations/{configId}": {
+      "schema": { "$ref": "#/entities/ProjectConfiguration" },
+      "description": "Masked environment variable metadata records belonging to a project"
+    },
+    "/projects/{projectId}/implementationPlans/{planId}": {
+      "schema": { "$ref": "#/entities/ImplementationPlan" },
+      "description": "Multi-step implementation plans belonging to a project"
+    },
+    "/projects/{projectId}/workspaces/{workspaceId}": {
+      "schema": { "$ref": "#/entities/WorkspaceInstance" },
+      "description": "Isolated execution workspace instances belonging to a project"
+    }
+  }
+}
+
