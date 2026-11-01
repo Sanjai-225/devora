@@ -185,3 +185,4 @@ workspaces/
 4. **Port management.** Ports are assigned from a pool. Port exhaustion is possible under heavy load.
 
 These limitations are clearly documented and the `ExecutionProvider` interface makes it straightforward to swap in a managed sandbox provider (E2B, Fly.io) when needed.
+

@@ -182,3 +182,4 @@
 - **P0** — Required for MVP
 - **P1** — Important, implement in early phases
 - **P2** — Enhancement, implement when core is stable
+

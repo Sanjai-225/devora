@@ -133,3 +133,4 @@
 - **Warning:** `#F59E0B`
 - **Error:** `#EF4444`
 - **Indigo accent:** `#6366F1`
+

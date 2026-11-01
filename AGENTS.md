@@ -77,3 +77,4 @@ devora/
 - Do not remove working features to make new features easier
 - Do not silently change user-selected technology stacks
 - Do not deploy publicly without explicit user approval
+

@@ -159,3 +159,4 @@ These are **strictly separate**. The Devora Agent Key is never exposed to genera
 - Agent tool invocations logged
 - Failed authorization attempts logged
 - All logs redact secret values
+

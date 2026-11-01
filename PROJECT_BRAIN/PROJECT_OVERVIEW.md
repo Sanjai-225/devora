@@ -47,3 +47,4 @@ Devora is an AI-powered website development platform that allows users to create
 5. **Incremental work** — Small changes don't regenerate everything
 6. **Design is optional** — Users choose their workflow
 7. **Free-tier friendly** — Built on open-source and free tiers where practical
+

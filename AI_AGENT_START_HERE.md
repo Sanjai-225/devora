@@ -61,3 +61,4 @@ Before modifying code, read:
 - `PROJECT_BRAIN/DATABASE_SCHEMA.md` — Firestore collections
 - `PROJECT_BRAIN/SECURITY.md` — Security requirements
 - `PROJECT_BRAIN/DECISIONS.md` — Why decisions were made
+

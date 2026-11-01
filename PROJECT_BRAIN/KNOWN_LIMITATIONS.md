@@ -81,3 +81,4 @@ The Stitch design generation API is not available as a stable, officially suppor
 The Devora platform requires a Gemini API key to power its agent. This is a platform configuration requirement, not exposed to generated projects.
 
 **Mitigation:** Free tier available. User can self-provide via settings. Provider abstraction supports alternative LLMs.
+

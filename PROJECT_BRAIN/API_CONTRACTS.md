@@ -292,3 +292,4 @@ All errors follow:
 | 409 | Conflict |
 | 429 | Rate limited |
 | 500 | Internal server error |
+

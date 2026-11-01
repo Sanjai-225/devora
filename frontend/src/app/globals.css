@@ -1,0 +1,96 @@
+@import "tailwindcss";
+
+/* ─── Obsidian Cyan Precision Design System ─────────────────────── */
+
+@theme inline {
+  /* Surfaces */
+  --color-canvas: #0B0D10;
+  --color-surface-1: #0F1217;
+  --color-surface-2: #151921;
+  --color-surface-3: #1C222D;
+
+  /* Borders */
+  --color-border: #232B38;
+  --color-border-hover: #2E3848;
+
+  /* Primary */
+  --color-cyan: #00F0FF;
+  --color-cyan-dim: #00DBE9;
+  --color-cyan-muted: rgba(0, 240, 255, 0.1);
+  --color-cyan-border: rgba(0, 240, 255, 0.25);
+
+  /* Accent */
+  --color-emerald: #10B981;
+  --color-emerald-muted: rgba(16, 185, 129, 0.1);
+  --color-emerald-border: rgba(16, 185, 129, 0.25);
+  --color-indigo: #6366F1;
+  --color-amber: #F59E0B;
+  --color-amber-muted: rgba(245, 158, 11, 0.1);
+  --color-amber-border: rgba(245, 158, 11, 0.25);
+  --color-red: #EF4444;
+  --color-red-muted: rgba(239, 68, 68, 0.1);
+  --color-red-border: rgba(239, 68, 68, 0.25);
+
+  /* Text */
+  --color-text-primary: #F1F5F9;
+  --color-text-secondary: #94A3B8;
+  --color-text-muted: #64748B;
+
+  /* Typography */
+  --font-sans: var(--font-geist-sans), system-ui, -apple-system, sans-serif;
+  --font-mono: var(--font-geist-mono), 'JetBrains Mono', monospace;
+}
+
+/* ─── Base ──────────────────────────────────────────────────────── */
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #232B38 transparent;
+}
+
+body {
+  background-color: #0B0D10;
+  color: #F1F5F9;
+  font-family: var(--font-sans);
+}
+
+/* ─── Focus ring ────────────────────────────────────────────────── */
+
+*:focus-visible {
+  outline: 1px solid #00F0FF;
+  outline-offset: 1px;
+}
+
+/* ─── Selection ─────────────────────────────────────────────────── */
+
+::selection {
+  background-color: rgba(0, 240, 255, 0.2);
+  color: #F1F5F9;
+}
+
+/* ─── Scrollbar (Webkit) ────────────────────────────────────────── */
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #232B38;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #2E3848;
+}
+
+/* ─── Input autofill ────────────────────────────────────────────── */
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0 30px #0F1217 inset !important;
+  -webkit-text-fill-color: #F1F5F9 !important;
+  caret-color: #F1F5F9;
+}

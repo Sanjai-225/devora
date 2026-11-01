@@ -187,3 +187,4 @@ LangGraph → [Analyze] → [Clarify] → [Stack] → [Design?]
 | ZIP archives | Local filesystem / S3 | Binary blobs |
 | Design assets | Local filesystem / S3 | Binary blobs |
 | Preview screenshots | Local filesystem / S3 | Binary blobs |
+
