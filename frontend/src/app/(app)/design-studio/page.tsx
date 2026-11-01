@@ -461,12 +461,12 @@ export default function DesignStudioPage() {
         prev.map((v) => ({ ...v, approved: v.id === activeVersionId })),
       );
       setStatusBanner(
-        'Design approved & synced with codebase! Redirecting to Code Workspace...',
+        'Design approved & synced with codebase! Redirecting to Configuration & Plan...',
       );
     } finally {
       setIsApproving(false);
       setTimeout(() => {
-        router.push(`/workspace?project=${projectId}`);
+        router.push(`/projects/${projectId}/configuration`);
       }, 650);
     }
   };

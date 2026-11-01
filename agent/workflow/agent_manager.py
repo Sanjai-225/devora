@@ -12,6 +12,12 @@ from typing import Any, AsyncGenerator, Optional
 
 from agent.providers.llm_provider import LLMMessage, LLMProvider
 from agent.providers.mock_provider import MockLLMProvider
+from agent.workflow.config_nodes import (
+    approve_implementation_plan,
+    detect_configuration_requirements,
+    generate_implementation_plan,
+    validate_and_apply_configuration,
+)
 from agent.workflow.design_nodes import (
     generate_initial_design,
     modify_design_version,
@@ -60,6 +66,16 @@ class AgentSession:
             "design_versions": [],
             "approved_design_version": None,
             "design_prototype_code": None,
+            "configuration_requirements": [],
+            "configuration_values": {},
+            "injection_guardrails": {
+                "auto_generate_env_example": True,
+                "zod_env_validation": True,
+                "secret_redaction_in_logs": True,
+                "prevent_client_secret_leaks": True,
+            },
+            "implementation_plan": None,
+            "plan_approved": False,
             "current_stage": "init",
             "agent_response": None,
             "should_wait_for_user": False,
@@ -312,6 +328,69 @@ class AgentSession:
         self._state["design_prototype_code"] = target["prototype_code"]
         self._state["agent_response"] = f"Restored design version **{target['version_tag']} • {target['label']}**."
         return target
+
+    # ── Phase 4: Configuration & Implementation Plan Methods ────────
+
+    async def detect_configuration(self) -> dict[str, Any]:
+        """Detect required environment variables and secrets from project requirements."""
+        if not self._state.get("requirements"):
+            # Ensure default requirements exist if called standalone
+            req = self.llm._extract_requirements(
+                self._state.get("user_request") or "IoT Fleet Telemetry Dashboard with PostgreSQL and Stripe billing"
+            ) if hasattr(self.llm, "_extract_requirements") else None
+            if req is not None:
+                self._state["requirements"] = req.model_dump()
+        out = await detect_configuration_requirements(self._state, self.llm)
+        self._state.update(out)
+        if self.graph is not None and HAS_LANGGRAPH:
+            try:
+                await self.graph.aupdate_state(self.config, out)
+            except Exception:
+                pass
+        return out
+
+    async def save_configuration(
+        self,
+        values: dict[str, str],
+        guardrails: Optional[dict[str, bool]] = None,
+    ) -> dict[str, Any]:
+        """Validate and save configuration values (masked in state) and update guardrails."""
+        if not self._state.get("configuration_requirements"):
+            await self.detect_configuration()
+        out = await validate_and_apply_configuration(self._state, values, guardrails)
+        self._state.update(out)
+        if self.graph is not None and HAS_LANGGRAPH:
+            try:
+                await self.graph.aupdate_state(self.config, out)
+            except Exception:
+                pass
+        return out
+
+    async def generate_plan(self) -> dict[str, Any]:
+        """Generate the multi-step ImplementationPlan for the project."""
+        if not self._state.get("configuration_requirements"):
+            await self.detect_configuration()
+        out = await generate_implementation_plan(self._state, self.llm)
+        self._state.update(out)
+        if self.graph is not None and HAS_LANGGRAPH:
+            try:
+                await self.graph.aupdate_state(self.config, out)
+            except Exception:
+                pass
+        return out
+
+    async def approve_plan(self) -> dict[str, Any]:
+        """Approve the implementation plan and advance to Phase 5 (Workspace & Execution)."""
+        if not self._state.get("implementation_plan"):
+            await self.generate_plan()
+        out = await approve_implementation_plan(self._state)
+        self._state.update(out)
+        if self.graph is not None and HAS_LANGGRAPH:
+            try:
+                await self.graph.aupdate_state(self.config, out)
+            except Exception:
+                pass
+        return out
 
     def _merge_local_state(self, node_output: dict) -> None:
         for k, v in node_output.items():

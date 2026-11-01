@@ -185,6 +185,92 @@ export interface DesignVersionListResponse {
   approved_version_id?: string | null;
 }
 
+export interface ConfigurationVariable {
+  key: string;
+  description: string;
+  category: string;
+  scope: 'server_only' | 'client_public';
+  required: boolean;
+  default_value?: string | null;
+  placeholder?: string | null;
+  encryption: string;
+  environments: string[];
+  is_configured: boolean;
+  masked_value?: string | null;
+}
+
+export interface SecretFile {
+  filename: string;
+  mount_path: string;
+  description: string;
+  required: boolean;
+  max_size_kb: number;
+  uploaded: boolean;
+  size_bytes?: number | null;
+}
+
+export interface ConfigurationState {
+  project_id: string;
+  project_type: string;
+  environment: 'development' | 'staging' | 'production' | string;
+  requires_credentials: boolean;
+  requires_database_url: boolean;
+  database_engine: string;
+  masked_database_uri: string;
+  ssl_mode: string;
+  connection_pooling: boolean;
+  variables: ConfigurationVariable[];
+  secret_files: SecretFile[];
+  guardrails: {
+    auto_generate_env_example: boolean;
+    zod_env_validation: boolean;
+    secret_redaction_in_logs: boolean;
+    prevent_client_secret_leaks: boolean;
+    [key: string]: boolean;
+  };
+  security_score: number;
+  summary_note: string;
+  updated_at: string;
+}
+
+export interface DatabaseTestResult {
+  reachable: boolean;
+  engine: string;
+  latency_ms: number;
+  tls_version: string;
+  pool_mode: string;
+  message: string;
+}
+
+export interface ImplementationPlanStep {
+  id: string;
+  step_number: number;
+  title: string;
+  phase: string;
+  description: string;
+  files_to_create: string[];
+  dependencies: string[];
+  verification_command: string;
+  estimated_seconds: number;
+  status: 'pending' | 'ready' | 'completed';
+}
+
+export interface ImplementationPlan {
+  id: string;
+  project_id: string;
+  project_name: string;
+  architecture_summary: string;
+  estimated_files_count: number;
+  estimated_duration_seconds: number;
+  environment_keys_configured: string[];
+  steps: ImplementationPlanStep[];
+  test_strategy: string[];
+  security_checks: string[];
+  approved: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
 export interface ProjectListResponse {
   projects: Project[];
   total: number;

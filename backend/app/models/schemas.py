@@ -194,6 +194,115 @@ class AgentStateResponse(BaseModel):
     events: list[dict] = Field(default_factory=list)
 
 
+class ConfigurationVariableSchema(BaseModel):
+    key: str
+    description: str
+    category: str = "app_config"
+    scope: Literal["server_only", "client_public"] = "server_only"
+    required: bool = True
+    default_value: Optional[str] = None
+    placeholder: Optional[str] = None
+    encryption: str = "AES-256"
+    environments: list[str] = Field(
+        default_factory=lambda: ["development", "staging", "production"]
+    )
+    is_configured: bool = False
+    masked_value: Optional[str] = None
+
+
+class SecretFileSchema(BaseModel):
+    filename: str
+    mount_path: str
+    description: str
+    required: bool = False
+    max_size_kb: int = 64
+    uploaded: bool = False
+    size_bytes: Optional[int] = None
+
+
+class ConfigurationSaveRequest(BaseModel):
+    environment: Literal["development", "staging", "production"] = "development"
+    values: dict[str, str] = Field(
+        default_factory=dict,
+        description="Key-value map of environment variables to store in server-side vault",
+    )
+    database_engine: Optional[str] = None
+    database_uri: Optional[str] = None
+    ssl_mode: Optional[str] = "require"
+    connection_pooling: bool = True
+    guardrails: Optional[dict[str, bool]] = None
+
+
+class DatabaseTestRequest(BaseModel):
+    engine: str = "postgresql"
+    connection_uri: str = Field(..., min_length=5, max_length=2048)
+    ssl_mode: str = "require"
+    connection_pooling: bool = True
+
+
+class DatabaseTestResponse(BaseModel):
+    reachable: bool
+    engine: str
+    latency_ms: int
+    tls_version: str = "TLS 1.3"
+    pool_mode: str = "Supavisor / PgBouncer Transaction"
+    message: str
+
+
+class ConfigurationStateResponse(BaseModel):
+    project_id: str
+    project_type: str = "dashboard"
+    environment: str = "development"
+    requires_credentials: bool = True
+    requires_database_url: bool = True
+    database_engine: str = "postgresql"
+    masked_database_uri: str = ""
+    ssl_mode: str = "require"
+    connection_pooling: bool = True
+    variables: list[ConfigurationVariableSchema] = Field(default_factory=list)
+    secret_files: list[SecretFileSchema] = Field(default_factory=list)
+    guardrails: dict[str, bool] = Field(
+        default_factory=lambda: {
+            "auto_generate_env_example": True,
+            "zod_env_validation": True,
+            "secret_redaction_in_logs": True,
+            "prevent_client_secret_leaks": True,
+        }
+    )
+    security_score: int = 98
+    summary_note: str = ""
+    updated_at: str
+
+
+class ImplementationPlanStepSchema(BaseModel):
+    id: str
+    step_number: int
+    title: str
+    phase: str
+    description: str
+    files_to_create: list[str] = Field(default_factory=list)
+    dependencies: list[str] = Field(default_factory=list)
+    verification_command: str = "npm run build"
+    estimated_seconds: int = 15
+    status: Literal["pending", "ready", "completed"] = "ready"
+
+
+class ImplementationPlanResponse(BaseModel):
+    id: str
+    project_id: str
+    project_name: str
+    architecture_summary: str
+    estimated_files_count: int
+    estimated_duration_seconds: int
+    environment_keys_configured: list[str] = Field(default_factory=list)
+    steps: list[ImplementationPlanStepSchema] = Field(default_factory=list)
+    test_strategy: list[str] = Field(default_factory=list)
+    security_checks: list[str] = Field(default_factory=list)
+    approved: bool = False
+    created_at: str
+    updated_at: str
+
+
 class ErrorResponse(BaseModel):
     error: dict = Field(
         ...,
@@ -208,6 +317,6 @@ class ErrorResponse(BaseModel):
 
 class HealthResponse(BaseModel):
     status: str = "ok"
-    version: str = "0.3.0"
+    version: str = "0.4.0"
     dev_mode: bool = False
     firebase_connected: bool = False

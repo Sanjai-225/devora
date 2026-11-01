@@ -1,5 +1,12 @@
 """Devora Agent — Pydantic models package."""
 
+from agent.models.configuration import (
+    ConfigurationDetectionResult,
+    ConfigurationVariableRequirement,
+    ImplementationPlan,
+    ImplementationPlanStep,
+    SecretFileRequirement,
+)
 from agent.models.design import (
     ColorPalette,
     DesignPrototypeResult,
@@ -29,14 +36,19 @@ __all__ = [
     "ClarificationQuestion",
     "ClarificationResult",
     "ColorPalette",
+    "ConfigurationDetectionResult",
+    "ConfigurationVariableRequirement",
     "DatabaseType",
     "DesignPreferences",
     "DesignPrototypeResult",
     "DesignSpecification",
     "FeatureDefinition",
     "Framework",
+    "ImplementationPlan",
+    "ImplementationPlanStep",
     "PageDefinition",
     "ProjectComplexity",
+    "SecretFileRequirement",
     "StackConfirmation",
     "StructuredRequirements",
     "StylingFramework",

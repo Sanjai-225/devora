@@ -108,7 +108,7 @@ export default function WorkflowDecisionPage() {
       if (choice === 'design_first') {
         router.push(`/projects/${projectId}/design-studio`);
       } else {
-        router.push(`/workspace?project=${projectId}`);
+        router.push(`/projects/${projectId}/configuration`);
       }
     }
   };

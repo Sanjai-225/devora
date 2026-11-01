@@ -90,9 +90,19 @@ class MockLLMProvider(LLMProvider):
             return self._analyze_clarifications(user_text)
 
         from agent.models.design import DesignSpecification
+        from agent.models.configuration import (
+            ConfigurationDetectionResult,
+            ImplementationPlan,
+        )
 
         if output_schema is DesignSpecification:
             return DesignSpecification()
+
+        if output_schema is ConfigurationDetectionResult:
+            return ConfigurationDetectionResult()
+
+        if output_schema is ImplementationPlan:
+            return ImplementationPlan()
 
         # Fallback generic instantiation
         return output_schema.model_validate({})

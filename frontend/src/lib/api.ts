@@ -4,9 +4,12 @@
 
 import type {
   AgentStateResponse,
+  ConfigurationState,
   ConversationMessage,
+  DatabaseTestResult,
   DesignVersion,
   DesignVersionListResponse,
+  ImplementationPlan,
   Project,
   ProjectListResponse,
 } from '@/types';
@@ -190,6 +193,65 @@ export const api = {
   restoreDesignVersion: (token: string, projectId: string, versionId: string) =>
     request<DesignVersion>(
       `/projects/${projectId}/design/versions/${versionId}/restore`,
+      { method: 'POST' },
+      token,
+    ),
+
+  // Configuration & Implementation Planning (Phase 4)
+  getConfiguration: (token: string, projectId: string) =>
+    request<ConfigurationState>(
+      `/projects/${projectId}/configuration`,
+      {},
+      token,
+    ),
+  saveConfiguration: (
+    token: string,
+    projectId: string,
+    payload: {
+      environment?: 'development' | 'staging' | 'production';
+      values: Record<string, string>;
+      database_engine?: string;
+      database_uri?: string;
+      ssl_mode?: string;
+      connection_pooling?: boolean;
+      guardrails?: Record<string, boolean>;
+    },
+  ) =>
+    request<ConfigurationState>(
+      `/projects/${projectId}/configuration`,
+      { method: 'POST', body: JSON.stringify(payload) },
+      token,
+    ),
+  testDatabaseConnection: (
+    token: string,
+    projectId: string,
+    payload: {
+      engine: string;
+      connection_uri: string;
+      ssl_mode?: string;
+      connection_pooling?: boolean;
+    },
+  ) =>
+    request<DatabaseTestResult>(
+      `/projects/${projectId}/configuration/test-db`,
+      { method: 'POST', body: JSON.stringify(payload) },
+      token,
+    ),
+  getPlan: (token: string, projectId: string) =>
+    request<ImplementationPlan>(
+      `/projects/${projectId}/plan`,
+      {},
+      token,
+    ),
+  generatePlan: (token: string, projectId: string) =>
+    request<ImplementationPlan>(
+      `/projects/${projectId}/plan/generate`,
+      { method: 'POST' },
+      token,
+    ),
+  approvePlan: (token: string, projectId: string) =>
+    request<ImplementationPlan>(
+      `/projects/${projectId}/plan/approve`,
       { method: 'POST' },
       token,
     ),
