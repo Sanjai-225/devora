@@ -5,6 +5,72 @@
 
 ---
 
+## [2026-11-01] User-Approved Production Merge of `feature/agent-2` (`v1.0.0 MVP` Phases 8–10) into `testing` & `main` + Live Production Deployments (Authored by **Agent 2**)
+- **Author / Agent Identity:** **Agent 2**
+- **Branches Synchronized:** `feature/agent-2`, `testing`, and `main` on `https://github.com/Sanjai-225/devora.git` (per explicit user instruction: *"merge to main branch as everything to the production app and deploy and connect all integrations as main production app"*)
+- **Phase Status:** **All Phases 0–10 ✅ 100% COMPLETE & LIVE IN PRODUCTION (`v1.0.0 MVP`)**
+- **Live Cloud Production Endpoints:**
+  - **Vercel Frontend (`devora-platform`):** `https://devora-platform.vercel.app` (`prj_oWWRDxrKRHy2tFK2sTYXZT6qDF9w`)
+  - **Render Backend + Agent (`devora-backend`):** `https://devora-backend-rl0i.onrender.com` (`srv-dbk07i49v7es73bamrmg`)
+  - **Firebase / Firestore:** `rapid-shift-r8chg` (and AI Studio Remix `ai-studio-remixdevora-a6abb029-cc39-4103-8594-7097449e25df`)
+- **Summary of Production Release:**
+  1. Added interactive `6. Integrations & Cloud Hub — v1.0` tab in the AI Studio preview shell (`src/App.tsx`) alongside the Next.js 16 `/integrations` route so all 6 platform stages (`1. Prompt & Spec`, `2. Design Studio`, `3. Config & Secrets`, `4. Workspace IDE`, `5. Test & Repair`, `6. Integrations & Cloud Hub`) are 100% interactive with zero placeholders.
+  2. Merged `feature/agent-2` (Phases 8, 9, and 10) cleanly into `testing` and `main` and pushed all branches to `https://github.com/Sanjai-225/devora.git`.
+  3. Triggered and verified live production deployments on Vercel (`devora-platform`) and Render (`devora-backend`) from the `main` branch.
+
+---
+
+## [2026-11-01] Phases 9 & 10 — GitHub Integrations, $0/Month Cloud Deployment, Security Hardening & v1.0.0 MVP Release (Authored by **Agent 2** on `feature/agent-2`)
+- **Author / Agent Identity:** **Agent 2**
+- **Active Branch:** `feature/agent-2` (pushed exclusively to `origin/feature/agent-2` on `https://github.com/Sanjai-225/devora.git`)
+- **Phase Status:** Phases 9 & 10 ✅ COMPLETE (**All Phases 0–10 100% Complete — `v1.0.0 MVP`**)
+- **Summary of Changes by Agent 2:**
+  1. **Phase 9 — GitHub Integration & Free-Tier Cloud Deployment Service (`backend/app/services/deployment_service.py`, `backend/app/api/routes/integrations.py`):**
+     - Implemented `build_github_oauth_url` (direct `https://github.com/login/oauth/authorize` URL for popup-based OAuth in iframe environments).
+     - Implemented `connect_user_integration`, `disconnect_user_integration`, and `list_user_integrations` with server-side secret masking (`_mask_token`) and Firestore sync (`/users/{userId}/integrations/{provider}`).
+     - Implemented `push_project_to_github` (packages generated workspace files, records Git checkpoint SHA, and enforces Phase 8 secret exclusion so `.env` and private keys are never pushed).
+     - Implemented `trigger_cloud_deployment` and `list_project_deployments` for **Vercel Hobby (`$0.00/mo`)** and **Render Free Web Service (`$0.00/mo`)**, strictly enforcing `user_confirmed=True` before any deployment.
+  2. **Phase 9 — Frontend Integrations & Deployment Hub (`frontend/src/app/(app)/integrations/page.tsx`, `frontend/src/lib/api.ts`, `frontend/src/types/index.ts`, `frontend/src/components/layout/sidebar.tsx`, `src/App.tsx`):**
+     - Created `/integrations` page matching the Obsidian Cyan Precision design system with Connected Cloud & Git Integrations cards, Secret-Safe GitHub Repository Push form, User-Confirmed Cloud Deployment gate, and Live Deployment Status & History table.
+     - Updated sidebar and AI Studio preview badges to `v1.0`.
+  3. **Phase 10 — Security Hardening, Cross-Project Isolation, Rate Limiting & E2E Scenarios A–F (`backend/app/middleware/rate_limit.py`, `backend/app/middleware/auth.py`, `backend/app/services/project_service.py`, `backend/app/api/routes/workspace.py`, `backend/app/main.py`):**
+     - Added `RateLimitAndSecurityMiddleware` enforcing sliding-window per-client rate limits (`429 Too Many Requests` + `Retry-After`) and `X-Content-Type-Options: nosniff` / `Referrer-Policy` headers.
+     - Added `verify_project_ownership` and router-level ownership enforcement across `/projects/{project_id}/workspace/*`, `/github/push`, and `/deploy` to prevent cross-user and cross-project access (`403 Forbidden`).
+     - Added `save_message` alias in `conversation_service.py` and flexible `request`/`data` parameter handling in `project_service.update_project`.
+  4. **Automated Verification (`tests/test_phase9_deployment.py` & `tests/test_phase10_security_and_e2e.py`):**
+     - Added 4 Phase 9 tests and 4 Phase 10 security/E2E tests (including full autonomous E2E Scenarios A–F from natural-language prompt -> Design Studio -> Configuration & Secret Vault -> Codegen & Surgical Edit -> Build/Playwright Verification -> Secret-Safe ZIP Export -> Confirmed Cloud Deployment).
+     - **31/31** pytest tests across Phases 2–10 passed; **22/22** Next.js 16 production routes compiled cleanly.
+
+---
+
+## [2026-11-01] Phase 8 — Secret-Safe ZIP Export & Standalone Project Management (Authored by **Agent 2** on `feature/agent-2`)
+- **Author / Agent Identity:** **Agent 2** (Continuing from Agent 1's Phase 0–7 handoff)
+- **Active Branch:** `feature/agent-2` (branched from `origin/main` and pushed exclusively to `origin/feature/agent-2`)
+- **Third-Party Integrations Verified Available to Agent 2:**
+  - **GitHub (`GITHUB_TOKEN`):** Authenticated push access to `https://github.com/Sanjai-225/devora.git`
+  - **Vercel (`VERCEL_TOKEN`):** Connected to project `devora-platform` (`prj_oWWRDxrKRHy2tFK2sTYXZT6qDF9w` at `https://devora-platform.vercel.app`)
+  - **Render (`RENDER_API_KEY`):** Connected to Free Web Service `devora-backend` (`srv-dbk07i49v7es73bamrmg` at `https://devora-backend-rl0i.onrender.com`)
+  - **Firebase / Firestore:** Connected to `rapid-shift-r8chg` (and AI Studio Remix database `ai-studio-remixdevora-a6abb029-cc39-4103-8594-7097449e25df`)
+  - **Gemini API (`GEMINI_API_KEY`):** Configured for Devora's LangGraph agent workflow
+- **Phase Status:** Phase 8 ✅ COMPLETE
+- **Summary of Changes by Agent 2:**
+  1. **Secret-Safe ZIP Archive & Standalone Packaging Service (`backend/app/services/export_service.py`):**
+     - Implemented `is_secret_or_excluded_path` to strictly exclude `.env`, `.env.local`, `.env.*`, `firebase-service-account.json`, `.git/`, `node_modules/`, `.next/`, and private key files (`.pem`, `.key`, `.p12`).
+     - Implemented `sanitize_content_for_export` to scrub any accidental inline live tokens (`sk_live_`, `rk_live_`, `ghp_`, `github_pat_`) before packaging.
+     - Implemented `generate_sanitized_env_example` (automatically discovers variable keys from project config and excluded `.env` files while substituting safe placeholder values).
+     - Implemented `generate_standalone_readme` (generates a complete `README.md` with local setup, build/test commands, file manifest, and `$0/month` Vercel + Render deployment instructions).
+     - Implemented `build_project_export_zip` and `_sync_export_to_firestore` (`/projects/{projectId}/exports/{exportId}`).
+  2. **Backend Schemas & FastAPI Endpoints (`backend/app/models/schemas.py`, `backend/app/api/routes/workspace.py`, `backend/app/main.py`):**
+     - Added `ProjectExportMetadataResponse` and bumped API version to `0.8.0`.
+     - Exposed `GET /api/v1/projects/{project_id}/workspace/export/metadata` and `GET /api/v1/projects/{project_id}/workspace/export` (`application/zip` attachment download).
+  3. **Frontend Workspace Export & Version History Rollback UI (`frontend/src/app/(app)/projects/[id]/workspace/page.tsx`, `frontend/src/types/index.ts`, `frontend/src/lib/api.ts`, `src/App.tsx`):**
+     - Added `Export ZIP` action button in the Workspace top bar and a dedicated `Export ZIP` center viewport tab featuring the Secret-Safe Export Inspector (included files vs. excluded secrets, `.env.example`, `README.md`) and Project Version History & 1-Click Rollback panel.
+     - Updated AI Studio preview shell (`src/App.tsx`) with `Phase 8 • Agent 2` badge and `Export Safe ZIP` button.
+  4. **Automated Verification (`tests/test_phase8_export.py`):**
+     - Created 3 comprehensive Phase 8 tests verifying secret exclusion + `.env.example`/`README.md` generation, standalone extraction + independent `check_build`/`run_tests` execution, and `/export/metadata`, `/export`, and `/checkpoints/{sha}/restore` REST endpoints (`23/23 passed` across Phases 2–8).
+
+---
+
 ## [2026-11-01] Phase 7 — Testing, Build Verification, Bounded Self-Repair Loop & Live Cloud Deployments (`d435673`)
 - **Commit SHA:** `d435673`
 - **Branches Synchronized:** `testing` and `main` (pushed to `https://github.com/Sanjai-225/devora.git` per explicit user request)

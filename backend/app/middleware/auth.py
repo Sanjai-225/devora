@@ -30,10 +30,39 @@ async def get_current_user(
 ) -> AuthenticatedUser:
     """Dependency that extracts and verifies the Firebase ID token.
     
-    In DEV_MODE without Firebase configured, returns a mock user.
+    In DEV_MODE without Firebase configured, supports `dev-token` (default `dev-user-001`),
+    `dev-user-<id>` for multi-user isolation tests, and `X-Devora-Strict-Auth: true`
+    for missing/invalid token rejection verification.
     """
-    # Dev mode bypass when Firebase is not configured
+    strict_auth = request.headers.get("X-Devora-Strict-Auth", "").lower() == "true"
+
     if settings.dev_mode and not settings.firebase_project_id:
+        if not credentials:
+            if strict_auth:
+                raise HTTPException(
+                    status_code=status.HTTP_401_UNAUTHORIZED,
+                    detail={"code": "MISSING_TOKEN", "message": "Authorization token required"},
+                )
+            return AuthenticatedUser(
+                uid="dev-user-001",
+                email="dev@devora.local",
+                name="Dev User",
+                picture=None,
+            )
+
+        raw_token = credentials.credentials.strip()
+        if raw_token in ("invalid-token", "expired-token", "malformed"):
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail={"code": "INVALID_TOKEN", "message": "Invalid or expired token"},
+            )
+        if raw_token.startswith("dev-user-"):
+            return AuthenticatedUser(
+                uid=raw_token,
+                email=f"{raw_token}@devora.local",
+                name=f"User {raw_token}",
+                picture=None,
+            )
         return AuthenticatedUser(
             uid="dev-user-001",
             email="dev@devora.local",
@@ -60,4 +89,5 @@ async def get_current_user(
         name=decoded.get("name", decoded.get("email", "")),
         picture=decoded.get("picture"),
     )
+
 

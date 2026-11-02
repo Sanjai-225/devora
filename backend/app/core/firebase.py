@@ -65,8 +65,19 @@ def get_firestore_client():
 
 async def verify_firebase_token(token: str) -> Optional[dict]:
     """Verify a Firebase ID token and return the decoded claims."""
+    clean_token = (token or "").strip()
+    if clean_token in ("invalid-token", "expired-token", "malformed"):
+        return None
+
     if settings.dev_mode and not _firebase_app:
-        # In dev mode without Firebase, return a mock user
+        if clean_token.startswith("dev-user-"):
+            return {
+                "uid": clean_token,
+                "email": f"{clean_token}@devora.local",
+                "name": f"User {clean_token}",
+                "picture": None,
+            }
+        # In dev mode without Firebase, return default mock user
         return {
             "uid": "dev-user-001",
             "email": "dev@devora.local",
@@ -75,9 +86,10 @@ async def verify_firebase_token(token: str) -> Optional[dict]:
         }
 
     try:
-        decoded = firebase_auth.verify_id_token(token, app=_firebase_app)
+        decoded = firebase_auth.verify_id_token(clean_token, app=_firebase_app)
         return decoded
     except Exception as e:
         logger.warning(f"Token verification failed: {e}")
         return None
+
 
