@@ -232,12 +232,17 @@ Read a specific file.
 ### GET `/api/v1/projects/{projectId}/files/changes`
 Get list of recently changed files.
 
-## Export
+## Export (Phase 8 — Agent 2)
 
-### POST `/api/v1/projects/{projectId}/export/zip`
-Generate and download project as ZIP.
+### GET `/api/v1/projects/{projectId}/workspace/export/metadata`
+Inspect the secret-safe ZIP export manifest (included files, excluded secrets, `.env.example`, `README.md`, and active Git checkpoint SHA).
 
-**Response:** Binary ZIP file stream
+**Response:** `ProjectExportMetadataResponse`
+
+### GET `/api/v1/projects/{projectId}/workspace/export`
+Generate and download a secret-safe, standalone ZIP archive of the project (`application/zip` attachment). Excludes `.env`, `.env.local`, `.git/`, `node_modules/`, and private keys while automatically generating `.env.example` and `README.md`.
+
+**Response:** Binary ZIP file stream (`application/zip`)
 
 ## Integrations
 

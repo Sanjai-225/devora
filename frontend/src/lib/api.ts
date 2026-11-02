@@ -429,6 +429,28 @@ export const api = {
       },
       token,
     ),
+
+  // Download & Project Management (Phase 8)
+  getWorkspaceExportMetadata: (token: string, projectId: string) =>
+    request<import('@/types').ProjectExportMetadata>(
+      `/projects/${projectId}/workspace/export/metadata`,
+      {},
+      token,
+    ),
+  downloadWorkspaceZip: async (token: string, projectId: string): Promise<Blob> => {
+    const headers: Record<string, string> = {};
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    }
+    const response = await fetch(
+      `${API_BASE}/projects/${projectId}/workspace/export`,
+      { headers },
+    );
+    if (!response.ok) {
+      throw new ApiError(response.status, 'EXPORT_FAILED', 'Failed to export ZIP archive');
+    }
+    return response.blob();
+  },
 };
 
 export { ApiError };

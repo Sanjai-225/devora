@@ -611,7 +611,7 @@ export default function App() {
             <span className="text-[#00F0FF]">D</span>evora
           </span>
           <span className="text-[10px] font-mono bg-[#00F0FF]/15 text-[#00F0FF] border border-[#00F0FF]/30 px-1.5 py-0.5 rounded">
-            Phase 7
+            Phase 8 • Agent 2
           </span>
         </div>
 
@@ -630,7 +630,7 @@ export default function App() {
             { id: 'workflow', label: '2. Workflow Decision', icon: GitBranch, badge: 'P3' },
             { id: 'design', label: '3. Design Studio', icon: Paintbrush, badge: 'P3' },
             { id: 'config', label: '4. Config & Plan', icon: ShieldCheck, badge: 'P4' },
-            { id: 'workspace', label: '5. Workspace & Verify', icon: Cpu, badge: 'P7' },
+            { id: 'workspace', label: '5. Workspace, Verify & Export', icon: Cpu, badge: 'P8' },
             { id: 'projects', label: 'Dashboard & Projects', icon: LayoutDashboard },
             { id: 'create', label: 'Create Website', icon: PlusCircle },
             { id: 'repo', label: 'My Projects', icon: FolderKanban },
@@ -1051,6 +1051,19 @@ export default function App() {
             </div>
 
             <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => {
+                  setWsLogs((prev) => [
+                    ...prev,
+                    '[Export] Packaged novastride-fleet-de728fd.zip (9 safe files, .env excluded, .env.example & README.md generated)',
+                  ]);
+                }}
+                className="px-3 py-1.5 rounded bg-[#00F0FF]/15 border border-[#00F0FF]/40 text-[#00F0FF] text-xs font-mono cursor-pointer flex items-center gap-1.5"
+              >
+                <Download size={13} />
+                <span>Export Safe ZIP</span>
+              </button>
               <button
                 type="button"
                 onClick={() => {

@@ -1,6 +1,6 @@
 """Devora Backend — Phase 5 & Phase 6 Workspace, Execution, Codegen & Git Checkpoint API routes."""
 
-from fastapi import APIRouter, Depends, HTTPException, Query, status
+from fastapi import APIRouter, Depends, HTTPException, Query, Response, status
 
 from app.middleware.auth import AuthenticatedUser, get_current_user
 from app.models.schemas import (
@@ -12,6 +12,7 @@ from app.models.schemas import (
     GitCheckpointSchema,
     IncrementalEditRequest,
     IncrementalEditResponse,
+    ProjectExportMetadataResponse,
     VerificationReportResponse,
     WorkspaceCommandRequest,
     WorkspaceCommandResponse,
@@ -28,7 +29,7 @@ from app.providers.local_process_manager import (
     PathTraversalError,
     get_execution_provider,
 )
-from app.services import codegen_service, workspace_service
+from app.services import codegen_service, export_service, workspace_service
 
 router = APIRouter(prefix="/projects/{project_id}/workspace", tags=["workspace"])
 
@@ -394,5 +395,46 @@ async def repair_workspace_errors_bounded(
         return VerificationReportResponse(**report.model_dump())
     except PathTraversalError as e:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=str(e))
+
+
+@router.get("/export/metadata", response_model=ProjectExportMetadataResponse)
+async def get_workspace_export_metadata(
+    project_id: str,
+    current_user: AuthenticatedUser = Depends(get_current_user),
+):
+    """Phase 8: Inspect secret-safe ZIP export manifest (included files, excluded secrets, .env.example, README.md)."""
+    try:
+        _, meta = await export_service.build_project_export_zip(
+            project_id=project_id,
+            user_id=current_user.uid,
+        )
+        return meta
+    except PathTraversalError as e:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=str(e))
+
+
+@router.get("/export")
+async def download_workspace_export_zip(
+    project_id: str,
+    current_user: AuthenticatedUser = Depends(get_current_user),
+):
+    """Phase 8: Download a secret-safe, standalone ZIP archive of the project with .env.example and README.md."""
+    try:
+        zip_bytes, meta = await export_service.build_project_export_zip(
+            project_id=project_id,
+            user_id=current_user.uid,
+        )
+        return Response(
+            content=zip_bytes,
+            media_type="application/zip",
+            headers={
+                "Content-Disposition": f'attachment; filename="{meta.filename}"',
+                "X-Devora-Export-Id": meta.export_id,
+                "X-Devora-Checkpoint-Sha": meta.checkpoint_sha,
+            },
+        )
+    except PathTraversalError as e:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=str(e))
+
 
 

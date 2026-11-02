@@ -477,6 +477,20 @@ export interface VerificationReport {
   verified_at: string;
 }
 
+export interface ProjectExportMetadata {
+  export_id: string;
+  project_id: string;
+  project_name: string;
+  filename: string;
+  size_bytes: number;
+  included_files: string[];
+  excluded_secrets: string[];
+  has_env_example: boolean;
+  has_readme: boolean;
+  checkpoint_sha: string;
+  exported_at: string;
+}
+
 export interface ProjectListResponse {
   projects: Project[];
   total: number;

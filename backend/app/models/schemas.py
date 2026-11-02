@@ -559,6 +559,20 @@ class VerificationReportResponse(BaseModel):
     verified_at: str
 
 
+class ProjectExportMetadataResponse(BaseModel):
+    export_id: str
+    project_id: str
+    project_name: str
+    filename: str
+    size_bytes: int = 0
+    included_files: list[str] = Field(default_factory=list)
+    excluded_secrets: list[str] = Field(default_factory=list)
+    has_env_example: bool = True
+    has_readme: bool = True
+    checkpoint_sha: str = "HEAD"
+    exported_at: str
+
+
 class ErrorResponse(BaseModel):
     error: dict = Field(
         ...,
@@ -573,9 +587,10 @@ class ErrorResponse(BaseModel):
 
 class HealthResponse(BaseModel):
     status: str = "ok"
-    version: str = "0.7.0"
+    version: str = "0.8.0"
     dev_mode: bool = False
     firebase_connected: bool = False
+
 
 
 
