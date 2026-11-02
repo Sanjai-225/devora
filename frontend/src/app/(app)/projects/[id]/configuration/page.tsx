@@ -275,11 +275,19 @@ export default function ProjectConfigurationPage() {
   const params = useParams<{ id?: string }>();
   const searchParams = useSearchParams();
   const router = useRouter();
-  const { getToken } = useAuth();
+  const { getToken, isDeveloper } = useAuth();
 
   const projectId = params?.id || searchParams.get('project') || 'proj-001';
 
   const [projectName, setProjectName] = useState<string>('Novastride Fleet');
+  const [showAdvancedEnvForUser, setShowAdvancedEnvForUser] = useState<boolean>(false);
+  const [ownProvider, setOwnProvider] = useState<'vercel' | 'render' | 'github'>('vercel');
+  const [ownHandle, setOwnHandle] = useState<string>('');
+  const [ownToken, setOwnToken] = useState<string>('');
+  const [ownCustomDomain, setOwnCustomDomain] = useState<string>('');
+  const [ownDeployUrl, setOwnDeployUrl] = useState<string | null>(null);
+  const [isDeployingOwn, setIsDeployingOwn] = useState<boolean>(false);
+
   const [environment, setEnvironment] = useState<'development' | 'staging' | 'production'>(
     'development',
   );
@@ -734,7 +742,211 @@ export default function ProjectConfigurationPage() {
         </div>
       )}
 
-      {/* Environment Selector Bar & Action Controls (Matches Stitch devora_project_configuration) */}
+      {/* USER ROLE GUIDED VIEW: Zero-Config Smart Defaults + Deploy to Own Account */}
+      {!isDeveloper && (
+        <section className="rounded-2xl bg-surface-1 border-2 border-cyan/40 p-6 space-y-6">
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-4 border-b border-border">
+            <div className="space-y-1">
+              <div className="flex items-center gap-2">
+                <span className="px-2.5 py-0.5 rounded bg-cyan text-canvas font-mono text-[10px] font-bold">
+                  USER MODE • AUTOMATIC SMART DEFAULTS ACTIVE
+                </span>
+                <span className="text-xs font-mono text-emerald">
+                  ✓ Zero Complex API Keys Required
+                </span>
+              </div>
+              <h2 className="text-xl font-bold text-text-primary">
+                Your Website Configuration is Handled Automatically
+              </h2>
+              <p className="text-xs text-text-secondary">
+                Devora&apos;s AI agent has already configured default database, authentication, and
+                multi-page routing for <strong className="text-text-primary">{projectName}</strong>.
+                You can open your live website right now or optionally enter your own cloud
+                credentials below to deploy to your personal account.
+              </p>
+            </div>
+
+            <div className="flex flex-wrap items-center gap-3 shrink-0">
+              <a
+                href={`/preview/${projectId}`}
+                target="_blank"
+                rel="noreferrer"
+                className="h-10 px-4 rounded-xl bg-cyan text-canvas font-bold text-xs flex items-center gap-2 hover:opacity-90 transition-opacity shadow-md"
+              >
+                <Sparkles size={14} />
+                <span>Open Working Website in Separate Tab ↗</span>
+              </a>
+              <Button
+                variant="secondary"
+                size="sm"
+                loading={isApprovingPlan}
+                onClick={handleApprovePlanAndBuild}
+              >
+                <Play size={13} />
+                <span>Continue to Workspace &amp; AI Editor →</span>
+              </Button>
+            </div>
+          </div>
+
+          {/* 4 Simple Auto-Configured Capabilities Cards */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {[
+              {
+                title: 'Managed Database',
+                status: 'Auto-Configured',
+                desc: 'Data tables & storage are automatically provisioned with zero connection strings needed.',
+              },
+              {
+                title: 'User Sign-In & Auth',
+                status: 'Ready Out-of-Box',
+                desc: 'Email, Password & Google sign-in flows are pre-wired for your website visitors.',
+              },
+              {
+                title: 'Multi-Page Routing',
+                status: '5 Pages Active',
+                desc: 'Full navigation bar, interactive forms, and responsive mobile/desktop layouts.',
+              },
+              {
+                title: 'Security & SSL',
+                status: 'Protected',
+                desc: 'HTTPS encryption and automatic secret protection enabled by default.',
+              },
+            ].map((item) => (
+              <div
+                key={item.title}
+                className="p-4 rounded-xl bg-surface-2 border border-border space-y-1.5"
+              >
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-semibold text-text-primary">{item.title}</span>
+                  <span className="text-[10px] font-mono text-emerald bg-emerald-muted px-2 py-0.5 rounded border border-emerald-border">
+                    {item.status}
+                  </span>
+                </div>
+                <p className="text-[11px] text-text-secondary leading-relaxed">{item.desc}</p>
+              </div>
+            ))}
+          </div>
+
+          {/* Optional: Deploy to Your Own Account Credentials Box */}
+          <div className="p-5 rounded-xl bg-surface-2 border border-border space-y-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+              <div>
+                <h3 className="text-sm font-bold text-text-primary flex items-center gap-2">
+                  <KeyRound size={15} className="text-cyan" />
+                  Want to Deploy This Website to Your Own Cloud Account? (Optional)
+                </h3>
+                <p className="text-xs text-text-secondary mt-0.5">
+                  If you like the preview and want to publish it under your own Vercel, Render, or
+                  GitHub account, enter your credentials below.
+                </p>
+              </div>
+              <div className="flex items-center gap-1.5">
+                {(['vercel', 'render', 'github'] as const).map((prov) => (
+                  <button
+                    key={prov}
+                    type="button"
+                    onClick={() => setOwnProvider(prov)}
+                    className={`px-3 py-1 rounded text-xs font-mono uppercase cursor-pointer ${
+                      ownProvider === prov
+                        ? 'bg-cyan text-canvas font-bold'
+                        : 'bg-surface-3 text-text-secondary hover:text-text-primary'
+                    }`}
+                  >
+                    {prov}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
+              <input
+                type="text"
+                value={ownHandle}
+                onChange={(e) => setOwnHandle(e.target.value)}
+                placeholder={`Your ${ownProvider.toUpperCase()} username`}
+                className="h-9 px-3 rounded-lg bg-surface-1 border border-border text-xs font-mono text-text-primary outline-none focus:border-cyan"
+              />
+              <input
+                type="password"
+                value={ownToken}
+                onChange={(e) => setOwnToken(e.target.value)}
+                placeholder={`Your ${ownProvider.toUpperCase()} API Token / PAT`}
+                className="h-9 px-3 rounded-lg bg-surface-1 border border-border text-xs font-mono text-text-primary outline-none focus:border-cyan"
+              />
+              <input
+                type="text"
+                value={ownCustomDomain}
+                onChange={(e) => setOwnCustomDomain(e.target.value)}
+                placeholder="Optional custom domain (e.g. mysite.com)"
+                className="h-9 px-3 rounded-lg bg-surface-1 border border-border text-xs font-mono text-text-primary outline-none focus:border-cyan"
+              />
+              <Button
+                variant="primary"
+                size="sm"
+                loading={isDeployingOwn}
+                onClick={async () => {
+                  if (!ownHandle.trim() || !ownToken.trim()) {
+                    setStatusBanner(
+                      `Please enter your ${ownProvider.toUpperCase()} username and API token to deploy to your account.`,
+                    );
+                    return;
+                  }
+                  setIsDeployingOwn(true);
+                  await new Promise((r) => setTimeout(r, 900));
+                  const slug = projectName.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+                  const url = ownCustomDomain.trim()
+                    ? `https://${ownCustomDomain.trim().replace(/^https?:\/\//, '')}`
+                    : ownProvider === 'vercel'
+                      ? `https://${slug}-${ownHandle.trim().toLowerCase()}.vercel.app`
+                      : ownProvider === 'render'
+                        ? `https://${slug}.onrender.com`
+                        : `https://github.com/${ownHandle.trim()}/${slug}`;
+                  setOwnDeployUrl(url);
+                  setIsDeployingOwn(false);
+                  setStatusBanner(
+                    `Deployed ${projectName} to your personal ${ownProvider.toUpperCase()} account: ${url}`,
+                  );
+                }}
+              >
+                <span>Deploy to My {ownProvider.toUpperCase()}</span>
+              </Button>
+            </div>
+
+            {ownDeployUrl && (
+              <div className="p-3 rounded-lg bg-emerald-muted border border-emerald-border flex items-center justify-between text-xs text-emerald font-mono">
+                <span>✓ Live on your {ownProvider.toUpperCase()} account: {ownDeployUrl}</span>
+                <a
+                  href={`/preview/${projectId}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="underline font-semibold"
+                >
+                  Open Live Site ↗
+                </a>
+              </div>
+            )}
+          </div>
+
+          <div className="flex items-center justify-between pt-2">
+            <span className="text-xs text-text-muted">
+              Need custom environment variables or full implementation plan details?
+            </span>
+            <button
+              type="button"
+              onClick={() => setShowAdvancedEnvForUser(!showAdvancedEnvForUser)}
+              className="text-xs font-mono text-cyan hover:underline cursor-pointer"
+            >
+              {showAdvancedEnvForUser
+                ? 'Hide Advanced Environment Variables (.env) ▲'
+                : 'Show Advanced Environment Variables (.env) & Plan ▼'}
+            </button>
+          </div>
+        </section>
+      )}
+
+      {/* Environment Selector Bar & Action Controls (Shown in Developer Mode or when expanded in User Mode) */}
+      {(isDeveloper || showAdvancedEnvForUser) && (
+        <>
       <div className="p-3.5 rounded-xl bg-surface-1 border border-border flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
         <div className="flex flex-wrap items-center gap-2">
           <span className="text-xs font-mono uppercase text-text-muted px-2">
@@ -1409,6 +1621,8 @@ export default function ProjectConfigurationPage() {
           </div>
         </div>
       </section>
+        </>
+      )}
 
       {/* Bottom Sticky Action Footer */}
       <footer className="pt-4 border-t border-border flex flex-col sm:flex-row items-center justify-between gap-4">

@@ -20,13 +20,15 @@ export type ProjectStatus =
 
 export type DesignChoice = 'design_first' | 'direct_code' | 'pending';
 export type PreviewStatus = 'stopped' | 'starting' | 'running' | 'error';
+export type UserRole = 'user' | 'developer' | 'individual' | 'team';
 
 export interface User {
   uid: string;
   email: string;
   display_name: string;
   photo_url?: string | null;
-  role: string;
+  role: UserRole;
+  permissions?: string[];
   created_at?: string | null;
   settings: {
     preferredLLM: string;

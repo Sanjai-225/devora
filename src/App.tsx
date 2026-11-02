@@ -154,6 +154,15 @@ export default function App() {
   const [fbUser, setFbUser] = useState<FirebaseUser | null>(null);
   const [authReady, setAuthReady] = useState(false);
 
+  const [previewRole, setPreviewRole] = useState<'user' | 'developer'>('user');
+  const [autoBuildPrompt, setAutoBuildPrompt] = useState(
+    'Build a multi-page luxury dental & aesthetic clinic website with online appointment booking, treatment catalog, doctor profiles, patient financing calculator, and contact location map',
+  );
+  const [autoBuiltSiteOpen, setAutoBuiltSiteOpen] = useState(false);
+  const [autoBuiltActivePage, setAutoBuiltActivePage] = useState<
+    'home' | 'services' | 'calculator' | 'pricing' | 'contact'
+  >('home');
+
   const [activeNav, setActiveNav] = useState<
     | 'synthesis'
     | 'workflow'
@@ -165,9 +174,9 @@ export default function App() {
     | 'projects'
   >('workspace');
   const [ghRepoInput, setGhRepoInput] = useState('Sanjai-225/devora');
-  const [ghBranchInput, setGhBranchInput] = useState<'main' | 'testing' | 'feature/agent-2'>('main');
+  const [ghBranchInput, setGhBranchInput] = useState<'main' | 'testing' | 'feature/agent-2'>('testing');
   const [ghPushBanner, setGhPushBanner] = useState<string | null>(
-    'Synchronized Phases 0–10 (v1.0.0 Production MVP) across main, testing, and feature/agent-2',
+    'Phase 11 RBAC (user vs developer) + User Auto-Build staged on testing branch',
   );
   const [cloudProviderChoice, setCloudProviderChoice] = useState<'vercel' | 'render'>('vercel');
   const [cloudConfirmChecked, setCloudConfirmChecked] = useState(true);
@@ -745,6 +754,133 @@ export default function App() {
           </div>
         </div>
       </aside>
+
+      {/* Main Content + RBAC Role & Auto-Build Bar */}
+      <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
+        <div className="bg-[#0F1217] border-b border-[#232B38] px-6 py-3 flex flex-wrap items-center justify-between gap-3">
+          <div className="flex items-center gap-3">
+            <span className="text-[11px] font-mono uppercase tracking-wider text-[#94A3B8]">
+              Active RBAC Profile:
+            </span>
+            <div className="inline-flex rounded-lg bg-[#0B0D10] p-1 border border-[#232B38]">
+              <button
+                type="button"
+                onClick={() => setPreviewRole('user')}
+                className={`px-3 py-1 rounded text-xs font-semibold transition-all cursor-pointer ${
+                  previewRole === 'user'
+                    ? 'bg-[#00F0FF] text-[#0B0D10]'
+                    : 'text-[#94A3B8] hover:text-[#F1F5F9]'
+                }`}
+              >
+                👤 User Role (creator@devora.app • Guided + Auto-Build)
+              </button>
+              <button
+                type="button"
+                onClick={() => setPreviewRole('developer')}
+                className={`px-3 py-1 rounded text-xs font-semibold transition-all cursor-pointer ${
+                  previewRole === 'developer'
+                    ? 'bg-[#A855F7] text-white'
+                    : 'text-[#94A3B8] hover:text-[#F1F5F9]'
+                }`}
+              >
+                🛠️ Developer Role (sanjay22522g@gmail.com / sanjai@2006)
+              </button>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2.5">
+            {previewRole === 'user' ? (
+              <button
+                type="button"
+                onClick={() => setAutoBuiltSiteOpen(true)}
+                className="px-3.5 py-1.5 rounded-lg bg-gradient-to-r from-[#00F0FF] to-[#10B981] text-[#0B0D10] text-xs font-bold flex items-center gap-1.5 shadow-sm cursor-pointer"
+              >
+                <Zap size={13} />
+                <span>⚡ Auto Build 5-Page Website (User Exclusive)</span>
+              </button>
+            ) : (
+              <span className="text-[11px] font-mono text-[#D8B4FE] bg-[#A855F7]/15 border border-[#A855F7]/30 px-2.5 py-1 rounded">
+                Full .env Vault + Integrations Unlocked
+              </span>
+            )}
+            <a
+              href="https://devora-platform-git-testing-techno-byte100.vercel.app"
+              target="_blank"
+              rel="noreferrer"
+              className="px-3 py-1.5 rounded-lg bg-[#151921] hover:bg-[#1C222D] border border-[#00F0FF]/40 text-[#00F0FF] text-xs font-mono"
+            >
+              Open Testing Branch URL ↗
+            </a>
+          </div>
+        </div>
+
+        {autoBuiltSiteOpen && (
+          <div className="bg-[#11161F] border-b-2 border-[#00F0FF] px-6 py-4 space-y-3">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <div>
+                <span className="text-[10px] font-mono uppercase tracking-wider px-2 py-0.5 rounded bg-[#10B981]/15 text-[#10B981] border border-[#10B981]/30">
+                  ⚡ Auto-Built Multi-Page Live Website • Default Configs Auto-Applied
+                </span>
+                <h3 className="text-sm font-bold text-[#F1F5F9] mt-1">
+                  Lumina Dental & Aesthetic Studio (5 Interactive Pages Generated from Prompt)
+                </h3>
+              </div>
+              <div className="flex items-center gap-2">
+                {(
+                  [
+                    { id: 'home', label: '1. Home & Hero' },
+                    { id: 'services', label: '2. Treatments' },
+                    { id: 'calculator', label: '3. Financing Calculator' },
+                    { id: 'pricing', label: '4. Plans & Booking' },
+                    { id: 'contact', label: '5. Doctors & Map' },
+                  ] as const
+                ).map((tab) => (
+                  <button
+                    key={tab.id}
+                    type="button"
+                    onClick={() => setAutoBuiltActivePage(tab.id)}
+                    className={`px-2.5 py-1 rounded text-xs font-medium cursor-pointer ${
+                      autoBuiltActivePage === tab.id
+                        ? 'bg-[#00F0FF] text-[#0B0D10] font-semibold'
+                        : 'bg-[#0B0D10] text-[#94A3B8] border border-[#232B38]'
+                    }`}
+                  >
+                    {tab.label}
+                  </button>
+                ))}
+                <button
+                  type="button"
+                  onClick={() => setAutoBuiltSiteOpen(false)}
+                  className="px-2.5 py-1 rounded bg-[#151921] text-[#94A3B8] hover:text-white text-xs cursor-pointer"
+                >
+                  Close Preview
+                </button>
+              </div>
+            </div>
+            <div className="flex flex-col md:flex-row gap-3 items-center justify-between bg-[#0B0D10] p-3 rounded-lg border border-[#232B38]">
+              <input
+                type="text"
+                value={autoBuildPrompt}
+                onChange={(e) => setAutoBuildPrompt(e.target.value)}
+                className="flex-1 w-full bg-[#151921] border border-[#232B38] rounded px-3 py-1.5 text-xs text-[#F1F5F9]"
+                placeholder="Describe any website to Auto-Build..."
+              />
+              <div className="flex items-center gap-2 shrink-0">
+                <span className="text-[11px] font-mono text-[#10B981]">
+                  Active Page: /{autoBuiltActivePage === 'home' ? '' : autoBuiltActivePage}
+                </span>
+                <a
+                  href="https://devora-platform-git-testing-techno-byte100.vercel.app/create-website?autobuild=1"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="px-3 py-1.5 rounded bg-[#00F0FF] text-[#0B0D10] text-xs font-bold"
+                >
+                  Launch Full Separate Tab Website ↗
+                </a>
+              </div>
+            </div>
+          </div>
+        )}
 
       {/* Main Content Switcher */}
       {activeNav === 'workflow' ? (
@@ -2173,6 +2309,7 @@ export default function App() {
           </div>
         </main>
       )}
+      </div>
     </div>
   );
 }

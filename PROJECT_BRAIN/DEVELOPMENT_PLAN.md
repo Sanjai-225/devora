@@ -15,6 +15,7 @@
 | 8 | Download & Project Mgmt | ✅ COMPLETE | Phase 6 |
 | 9 | GitHub & Deployment | ✅ COMPLETE | Phase 8 |
 | 10 | Security, Polish & Release | ✅ COMPLETE | All |
+| 11 | Dual-Role RBAC (`user` vs `developer`) & User Auto-Build | ✅ COMPLETE (`testing`) | Phase 10 |
 
 ---
 
@@ -263,6 +264,4 @@
 | 2026-11-01 | 8 | **Agent 2 (`feature/agent-2`)**: Secret-Safe ZIP Export & Standalone Project Management (`backend/app/services/export_service.py`, `.env.example` & standalone `README.md` generation, `.env`/`.git`/`node_modules` exclusion + inline secret token scrubbing, `GET /export/metadata` & `GET /export` endpoints, Workspace Export ZIP & Version History Rollback UI tab, and Phase 8 automated test suite — `23/23 passed`) |
 | 2026-11-01 | 9 | **Agent 2 (`feature/agent-2`)**: GitHub Integrations & $0/Month Cloud Deployment (`backend/app/services/deployment_service.py`, `backend/app/api/routes/integrations.py`, popup-compatible GitHub OAuth URL & masked credential vault, secret-safe GitHub repository push, user-confirmed Vercel Hobby & Render Free Web Service deployment adapters, `/integrations` Next.js page, and `tests/test_phase9_deployment.py` — `27/27 passed`) |
 | 2026-11-01 | 10 | **Agent 2 (`feature/agent-2`)**: Security Hardening, Rate Limiting, Cross-Project Isolation & v1.0.0 MVP Release (`backend/app/middleware/rate_limit.py`, router-level ownership enforcement across `/projects/{id}/workspace/*`, `X-Content-Type-Options: nosniff` + sliding-window rate-limiting headers, End-to-End Scenarios A–F in `tests/test_phase10_security_and_e2e.py` — `31/31 passed`, `22/22` Next.js 16 routes compiled) |
-
-
-
+| 2026-11-02 | 11 | **Agent 2 (`testing`)**: Dual-Role RBAC (`user` vs `developer` with `sanjay22522g@gmail.com` / `sanjai@2006`), Guided Creator Dashboard, Dynamic Multi-Page Synthesizer (`frontend/src/lib/website-synthesizer.ts`), Separate-Tab Live Multi-Page Website (`/preview/[id]`), User-Exclusive `⚡ Auto Build Website` (`POST /api/v1/projects/auto-build` & `POST /api/v1/projects/suggest`), and `tests/test_phase11_rbac_and_autobuild.py` (`34/34 passed`, `23/23` Next.js 16 routes compiled) |

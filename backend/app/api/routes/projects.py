@@ -5,14 +5,36 @@ from typing import Optional
 
 from app.middleware.auth import AuthenticatedUser, get_current_user
 from app.models.schemas import (
+    AutoBuildRequest,
+    AutoBuildResponse,
     CreateProjectRequest,
     ProjectListResponse,
     ProjectResponse,
+    PromptSuggestionRequest,
+    PromptSuggestionResponse,
     UpdateProjectRequest,
 )
 from app.services import project_service
 
 router = APIRouter(prefix="/projects", tags=["projects"])
+
+
+@router.post("/suggest", response_model=PromptSuggestionResponse)
+async def suggest_website_architecture(
+    request: PromptSuggestionRequest,
+    user: AuthenticatedUser = Depends(get_current_user),
+):
+    """Analyze a natural language website prompt and return AI suggestions for pages, stack, and design."""
+    return await project_service.suggest_from_prompt(request.prompt)
+
+
+@router.post("/auto-build", response_model=AutoBuildResponse, status_code=status.HTTP_201_CREATED)
+async def auto_build_website(
+    request: AutoBuildRequest,
+    user: AuthenticatedUser = Depends(get_current_user),
+):
+    """One-click Auto-Build for User role: handles all default configurations and generates a multi-page live website."""
+    return await project_service.auto_build_project(user.uid, request)
 
 
 @router.get("", response_model=ProjectListResponse)

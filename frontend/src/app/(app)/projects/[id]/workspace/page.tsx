@@ -53,6 +53,10 @@ import {
 } from 'lucide-react';
 import { useAuth } from '@/contexts/auth-context';
 import { api } from '@/lib/api';
+import {
+  applyModificationToWebsite,
+  loadSynthesizedWebsite,
+} from '@/lib/website-synthesizer';
 import type {
   DeploymentConfirmationResult,
   GeneratedFileDiff,
@@ -537,6 +541,13 @@ export default function ProjectWorkspacePage() {
     setCodegenBusy(true);
 
     try {
+      const currentSite = loadSynthesizedWebsite(projectId);
+      applyModificationToWebsite(currentSite, msg);
+    } catch {
+      // ignore
+    }
+
+    try {
       const token = (await getToken()) || 'dev-token';
       const editRes = await api.editWorkspaceCode(token, projectId, msg);
       setRecentDiffs(editRes.file_diffs);
@@ -946,6 +957,16 @@ export default function ProjectWorkspacePage() {
 
         {/* Active Build, Process PID, Port & Lifecycle Controls */}
         <div className="flex items-center gap-2 flex-wrap">
+          <a
+            href={`/preview/${projectId}`}
+            target="_blank"
+            rel="noreferrer"
+            className="flex items-center gap-1.5 px-3 py-1 rounded bg-[#00F0FF] text-[#0B0D10] font-semibold text-xs hover:opacity-90 transition-opacity"
+          >
+            <Sparkles className="w-3.5 h-3.5" />
+            <span>Open Working Website in Separate Tab ↗</span>
+          </a>
+
           <button
             onClick={handleGenerateFullProject}
             disabled={codegenBusy}

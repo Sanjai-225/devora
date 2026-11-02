@@ -59,7 +59,69 @@ class UpdateProjectRequest(BaseModel):
 
 class UpdateUserRequest(BaseModel):
     display_name: Optional[str] = Field(None, min_length=1, max_length=100)
+    role: Optional[Literal["user", "developer", "individual", "team"]] = None
     settings: Optional[dict] = None
+
+
+class RoleLoginRequest(BaseModel):
+    email: str = Field(..., min_length=3, max_length=160)
+    password: str = Field(..., min_length=3, max_length=160)
+    preferred_role: Optional[Literal["user", "developer"]] = None
+
+
+class RoleRegisterRequest(BaseModel):
+    name: str = Field(..., min_length=1, max_length=100)
+    email: str = Field(..., min_length=3, max_length=160)
+    password: str = Field(..., min_length=3, max_length=160)
+    role: Literal["user", "developer"] = "user"
+
+
+class PromptSuggestionRequest(BaseModel):
+    prompt: str = Field(..., min_length=3, max_length=10000)
+
+
+class AutoBuildRequest(BaseModel):
+    prompt: str = Field(..., min_length=3, max_length=10000)
+    project_name: Optional[str] = Field(None, max_length=100)
+    preferred_style: Optional[str] = Field(None, max_length=100)
+
+
+class AutoBuildPageSpec(BaseModel):
+    id: str
+    title: str
+    route: str
+    nav_label: str
+    hero_badge: str
+    headline: str
+    subheadline: str
+    primary_cta: str
+    secondary_cta: str
+    interactive_widget_type: str
+    sections: list[dict[str, Any]] = Field(default_factory=list)
+    metrics: list[dict[str, str]] = Field(default_factory=list)
+    items: list[dict[str, Any]] = Field(default_factory=list)
+
+
+class PromptSuggestionResponse(BaseModel):
+    inferred_name: str
+    domain_category: str
+    tagline: str
+    recommended_stack: dict[str, str]
+    color_palette: dict[str, str]
+    suggested_pages: list[dict[str, str]]
+    suggested_features: list[str]
+    ai_architecture_notes: list[str]
+
+
+class AutoBuildResponse(BaseModel):
+    project: "ProjectResponse"
+    role_used: str = "user"
+    auto_configured_defaults: dict[str, Any]
+    suggestion: PromptSuggestionResponse
+    pages: list[AutoBuildPageSpec]
+    live_preview_path: str
+    pipeline_steps_completed: list[str]
+    built_at: str
 
 
 class AgentStartRequest(BaseModel):
@@ -107,13 +169,30 @@ class UserResponse(BaseModel):
     email: str
     display_name: str
     photo_url: Optional[str] = None
-    role: str = "individual"
+    role: str = "user"
     created_at: Optional[str] = None
+    permissions: list[str] = Field(default_factory=lambda: [
+        "create_website",
+        "auto_build",
+        "ai_suggestions",
+        "tech_stack_customize",
+        "design_studio",
+        "workspace_modify",
+        "live_preview_tab",
+        "export_zip",
+        "deploy_own_credentials",
+    ])
     settings: dict = Field(default_factory=lambda: {
         "preferredLLM": "gemini",
         "defaultFramework": "nextjs",
         "defaultStyling": "tailwind",
     })
+
+
+class RoleAuthResponse(BaseModel):
+    token: str
+    user: UserResponse
+    mode_summary: str
 
 
 class ProjectResponse(BaseModel):

@@ -70,9 +70,30 @@ export const api = {
   // Health
   health: () => request<{ status: string; version: string }>('/health'),
 
-  // Auth
+  // Auth & RBAC Roles
   verify: (token: string) =>
-    request<{ uid: string; email: string }>('/auth/verify', {}, token),
+    request<{ uid: string; email: string; role?: string; display_name?: string }>('/auth/verify', {}, token),
+  loginWithRole: (payload: {
+    email: string;
+    password: string;
+    preferred_role?: 'user' | 'developer';
+  }) =>
+    request<{
+      token: string;
+      user: import('@/types').User;
+      mode_summary: string;
+    }>('/auth/login', { method: 'POST', body: JSON.stringify(payload) }),
+  registerWithRole: (payload: {
+    name: string;
+    email: string;
+    password: string;
+    role: 'user' | 'developer';
+  }) =>
+    request<{
+      token: string;
+      user: import('@/types').User;
+      mode_summary: string;
+    }>('/auth/register', { method: 'POST', body: JSON.stringify(payload) }),
 
   // Users
   getProfile: (token: string) =>
@@ -80,7 +101,30 @@ export const api = {
   updateProfile: (token: string, data: Record<string, unknown>) =>
     request<Record<string, unknown>>('/users/me', { method: 'PUT', body: JSON.stringify(data) }, token),
 
-  // Projects
+  // Projects & Auto-Build
+  suggestWebsite: (token: string, prompt: string) =>
+    request<{
+      inferred_name: string;
+      domain_category: string;
+      tagline: string;
+      recommended_stack: Record<string, string>;
+      color_palette: Record<string, string>;
+      suggested_pages: { name: string; route: string; description: string }[];
+      suggested_features: string[];
+      ai_architecture_notes: string[];
+    }>('/projects/suggest', { method: 'POST', body: JSON.stringify({ prompt }) }, token),
+  autoBuildWebsite: (
+    token: string,
+    payload: { prompt: string; project_name?: string; preferred_style?: string },
+  ) =>
+    request<{
+      project: Project;
+      role_used: string;
+      auto_configured_defaults: Record<string, unknown>;
+      live_preview_path: string;
+      pipeline_steps_completed: string[];
+      built_at: string;
+    }>('/projects/auto-build', { method: 'POST', body: JSON.stringify(payload) }, token),
   listProjects: (token: string, params?: Record<string, string>) => {
     const qs = params ? '?' + new URLSearchParams(params).toString() : '';
     return request<ProjectListResponse>(

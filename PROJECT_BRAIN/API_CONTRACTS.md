@@ -21,6 +21,18 @@ Verify Firebase token and return user info.
 }
 ```
 
+### POST `/api/v1/auth/login`
+Authenticate with email, password, and RBAC role (`user` or `developer`). Supports Developer account `sanjay22522g@gmail.com` / `sanjai@2006` and standard User Creator accounts.
+
+### POST `/api/v1/auth/register`
+Register a new account with RBAC role (`user` or `developer`) and return `RoleAuthResponse` (`token` + `UserResponse` with `role` and `permissions`).
+
+### POST `/api/v1/projects/suggest`
+Generate real-time AI architecture suggestions (5-page blueprint, domain category, color palette, tech stack, and interactive features) from a natural-language website prompt.
+
+### POST `/api/v1/projects/auto-build`
+User-role exclusive 1-click Auto-Build endpoint: automatically configures default database/auth/routing settings, generates a 5-page interactive website tailored to the user's prompt, and returns `livePreviewUrl` (`/preview/{projectId}`) for opening in a separate browser tab.
+
 ## Users
 
 ### GET `/api/v1/users/me`

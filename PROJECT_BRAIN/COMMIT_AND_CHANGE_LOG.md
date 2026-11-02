@@ -5,6 +5,26 @@
 
 ---
 
+## [2026-11-02] Phase 11 — Dual-Role RBAC (`user` vs `developer`), Guided Creator Dashboard, Dynamic Multi-Page Synthesizer & User-Exclusive `⚡ Auto Build Website` on `testing` Branch (Authored by **Agent 2**)
+- **Author / Agent Identity:** **Agent 2**
+- **Active Branch:** `testing` (pushed exclusively to `origin/testing` on `https://github.com/Sanjai-225/devora.git` so the user can test on the public `testing` branch URL before approving any merge to `main`)
+- **Public `testing` Branch Preview URL (Vercel):** `https://devora-platform-git-testing-techno-byte100.vercel.app`
+- **Phase Status:** Phase 11 ✅ COMPLETE on `testing` (`34/34` pytest tests & `23/23` Next.js 16 routes passing)
+- **Summary of Changes by Agent 2:**
+  1. **Dual-Role RBAC (`user` vs `developer`) Authentication & Profiles (`backend/app/models/schemas.py`, `backend/app/middleware/auth.py`, `backend/app/services/user_service.py`, `backend/app/api/routes/auth.py`, `frontend/src/contexts/auth-context.tsx`, `frontend/src/app/(auth)/sign-in/page.tsx`, `frontend/src/app/(auth)/create-account/page.tsx`):**
+     - Configured **Developer Account (`developer`)** for `sanjay22522g@gmail.com` / `sanjai@2006` with full Engineering Console access (raw AES-256 `.env` tables, PostgreSQL handshake tester, Git branch controls, and Platform Integrations vault at `/integrations`).
+     - Configured **User Account (`user`)** (`creator@devora.app` / `user@2026` or any registered user account) with a guided 4-step creator dashboard, automatic default configuration, and **zero feature minimization** (full access to AI suggestions, tech stack customization, Design Studio, live AI edits, file explorer, testing, ZIP export, and optional deployment to their own cloud credentials).
+  2. **Dynamic Multi-Page Website Synthesizer & Standalone Separate-Tab Website (`frontend/src/lib/website-synthesizer.ts`, `frontend/src/app/preview/[id]/page.tsx`):**
+     - Built a prompt-responsive multi-page website synthesizer that never reuses a single static template: generates bespoke 5-page interactive websites across Healthcare/Dental, E-Commerce, Real Estate, Hospitality/Dining, Fitness, EdTech, and custom SaaS prompts.
+     - Created `/preview/[id]` (opened in a separate browser tab via `target="_blank"`) featuring working 5-page navigation, interactive domain calculators/widgets, live AI modification bar, and a **"Deploy to My Own Account"** credential configuration modal.
+  3. **User-Exclusive `⚡ Auto Build Website` Workflow (`backend/app/services/project_service.py`, `backend/app/api/routes/projects.py`, `frontend/src/app/(app)/dashboard/page.tsx`, `frontend/src/app/(app)/create-website/page.tsx`, `frontend/src/app/(app)/projects/[id]/configuration/page.tsx`, `frontend/src/app/(app)/projects/[id]/workspace/page.tsx`):**
+     - Added `POST /api/v1/projects/suggest` and `POST /api/v1/projects/auto-build`.
+     - Added User-exclusive **"⚡ Auto Build Website"** buttons on the User Dashboard and Create Website page that automatically apply default configurations and open the working 5-page website in a separate tab.
+  4. **Automated Verification (`tests/test_phase11_rbac_and_autobuild.py`):**
+     - Added 3 Phase 11 tests verifying `sanjay22522g@gmail.com` / `sanjai@2006` Developer login vs User login permissions, prompt-responsive AI suggestions, and `POST /api/v1/projects/auto-build` (`34/34` total pytest tests passing; `23/23` Next.js 16 routes compiled cleanly).
+
+---
+
 ## [2026-11-01] User-Approved Production Merge of `feature/agent-2` (`v1.0.0 MVP` Phases 8–10) into `testing` & `main` + Live Production Deployments (Authored by **Agent 2**)
 - **Author / Agent Identity:** **Agent 2**
 - **Branches Synchronized:** `feature/agent-2`, `testing`, and `main` on `https://github.com/Sanjai-225/devora.git` (per explicit user instruction: *"merge to main branch as everything to the production app and deploy and connect all integrations as main production app"*)

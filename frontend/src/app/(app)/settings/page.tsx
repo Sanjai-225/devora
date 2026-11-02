@@ -40,36 +40,57 @@ const AI_PROVIDERS = [
 ];
 
 export default function SettingsPage() {
-  const { user } = useAuth();
+  const { user, isDeveloper, switchRole } = useAuth();
   const [activeTab, setActiveTab] = useState('profile');
   const [displayName, setDisplayName] = useState(user?.display_name || '');
-  const [email] = useState(user?.email || '');
+  const [statusMsg, setStatusMsg] = useState<string | null>(null);
 
   return (
-    <div className="p-6 max-w-[1440px] mx-auto">
+    <div className="p-6 max-w-[1440px] mx-auto space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight">System Settings</h1>
+          <h1 className="text-2xl font-semibold tracking-tight">
+            {isDeveloper ? 'Developer System Settings & RBAC Profile' : 'User Profile & Website Defaults'}
+          </h1>
           <p className="text-sm text-text-secondary mt-1">
-            Manage AI models, API keys, usage limits, and workspace defaults.
+            {isDeveloper
+              ? 'Manage Developer Account (sanjay22522g@gmail.com), AI engines, API keys, and workspace defaults.'
+              : 'Manage your Creator Profile, RBAC role, AI website defaults, and account preferences.'}
           </p>
         </div>
         <div className="flex items-center gap-3">
-          <Button variant="secondary">Discard</Button>
-          <Button variant="primary" icon={<Save size={14} />}>Save Changes</Button>
+          <Button
+            variant="secondary"
+            onClick={() => switchRole(isDeveloper ? 'user' : 'developer')}
+          >
+            Switch to {isDeveloper ? 'User (Creator) Role' : 'Developer Role'}
+          </Button>
+          <Button
+            variant="primary"
+            icon={<Save size={14} />}
+            onClick={() => setStatusMsg('Profile & role settings saved.')}
+          >
+            Save Changes
+          </Button>
         </div>
       </div>
 
+      {statusMsg && (
+        <div className="p-3 rounded-lg bg-emerald-muted border border-emerald-border text-xs text-emerald font-mono">
+          ✓ {statusMsg}
+        </div>
+      )}
+
       {/* Tabs */}
-      <div className="flex items-center gap-1 border-b border-border mb-6">
+      <div className="flex items-center gap-1 border-b border-border">
         {TABS.map((tab) => {
           const Icon = tab.icon;
           return (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`flex items-center gap-2 px-4 h-10 text-sm font-medium border-b-2 transition-colors -mb-[1px] ${
+              className={`flex items-center gap-2 px-4 h-10 text-sm font-medium border-b-2 transition-colors -mb-[1px] cursor-pointer ${
                 activeTab === tab.id
                   ? 'border-cyan text-text-primary'
                   : 'border-transparent text-text-secondary hover:text-text-primary'
@@ -77,55 +98,99 @@ export default function SettingsPage() {
             >
               {Icon && <Icon size={14} />}
               {tab.label}
-              {tab.dot && (
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald" />
-              )}
+              {tab.dot && <span className="w-1.5 h-1.5 rounded-full bg-emerald" />}
             </button>
           );
         })}
       </div>
 
       {/* Content */}
-      <div className="grid grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Main content — 2 cols */}
-        <div className="col-span-2 space-y-6">
+        <div className="lg:col-span-2 space-y-6">
           {activeTab === 'profile' && (
             <>
               <Card>
                 <CardContent className="space-y-4">
-                  <h3 className="text-sm font-medium text-text-primary mb-3">Profile Information</h3>
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-sm font-medium text-text-primary">
+                      Active RBAC Profile &amp; Credentials
+                    </h3>
+                    <span
+                      className={`text-[10px] font-mono px-2 py-0.5 rounded border ${
+                        isDeveloper
+                          ? 'bg-emerald-muted text-emerald border-emerald-border'
+                          : 'bg-cyan/15 text-cyan border-cyan/30'
+                      }`}
+                    >
+                      {isDeveloper ? 'ROLE: DEVELOPER' : 'ROLE: USER (CREATOR)'}
+                    </span>
+                  </div>
                   <Input
                     label="Display Name"
-                    value={displayName}
+                    value={displayName || user?.display_name || ''}
                     onChange={(e) => setDisplayName(e.target.value)}
                     placeholder="Your name"
                   />
                   <Input
-                    label="Email"
-                    value={email}
+                    label="Account Email"
+                    value={user?.email || (isDeveloper ? 'sanjay22522g@gmail.com' : 'creator@devora.app')}
                     disabled
-                    hint="Email is managed by your authentication provider"
+                    hint={
+                      isDeveloper
+                        ? 'Developer ID: sanjay22522g@gmail.com (Password: sanjai@2006)'
+                        : 'User Creator Account (Includes 1-Click Auto-Build & Guided Workflow)'
+                    }
                   />
-                </CardContent>
-              </Card>
 
-              <Card>
-                <CardContent>
-                  <h3 className="text-sm font-medium text-red mb-2 flex items-center gap-2">
-                    ⚠ Danger Zone
-                  </h3>
-                  <p className="text-xs text-text-secondary mb-4">
-                    Irreversible actions that affect repository linkages, live preview environments, and workspace history.
-                  </p>
-                  <div className="space-y-2">
-                    <Button variant="secondary" className="w-full justify-between">
-                      Transfer Workspace Ownership
-                      <span className="text-text-muted">→</span>
-                    </Button>
-                    <Button variant="danger" className="w-full justify-between">
-                      Delete Workspace & Purge Cache
-                      <span>🗑</span>
-                    </Button>
+                  {/* Dual RBAC Role Switcher Cards */}
+                  <div className="pt-2 space-y-2">
+                    <p className="text-xs font-medium text-text-primary">
+                      Switch Active RBAC Role Profile
+                    </p>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      <button
+                        type="button"
+                        onClick={() => switchRole('user')}
+                        className={`p-4 rounded-xl border text-left transition-all cursor-pointer ${
+                          !isDeveloper
+                            ? 'bg-cyan/10 border-cyan text-text-primary'
+                            : 'bg-surface-1 border-border text-text-secondary hover:text-text-primary'
+                        }`}
+                      >
+                        <div className="text-xs font-bold text-cyan mb-1">
+                          User Profile (Website Creator)
+                        </div>
+                        <div className="text-[11px] font-mono text-text-muted mb-1">
+                          creator@devora.app / user@2026
+                        </div>
+                        <p className="text-xs text-text-secondary">
+                          Guided dashboard, AI suggestions, exclusive 1-Click Auto-Build in new tab,
+                          Design Studio, Workspace edits, and optional Deploy to Own Account.
+                        </p>
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => switchRole('developer')}
+                        className={`p-4 rounded-xl border text-left transition-all cursor-pointer ${
+                          isDeveloper
+                            ? 'bg-emerald/10 border-emerald text-text-primary'
+                            : 'bg-surface-1 border-border text-text-secondary hover:text-text-primary'
+                        }`}
+                      >
+                        <div className="text-xs font-bold text-emerald mb-1">
+                          Developer Profile (Sanjay G)
+                        </div>
+                        <div className="text-[11px] font-mono text-text-muted mb-1">
+                          sanjay22522g@gmail.com / sanjai@2006
+                        </div>
+                        <p className="text-xs text-text-secondary">
+                          Full Engineering Console, raw AES-256 .env secret tables, PostgreSQL
+                          handshake tester, Git branch controls, and Platform Integrations vault.
+                        </p>
+                      </button>
+                    </div>
                   </div>
                 </CardContent>
               </Card>

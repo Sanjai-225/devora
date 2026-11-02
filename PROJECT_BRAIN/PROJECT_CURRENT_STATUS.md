@@ -1,11 +1,12 @@
 # Devora — Project Current Status & Universal AI Agent Handoff Report
 
-> **Last Updated:** 2026-11-01
-> **Current Active Agent:** **Agent 2** (Completed Phases 8, 9, and 10 — `v1.0.0 MVP` Production Release)
-> **Active & Synchronized Git Branches:** `main`, `testing`, and `feature/agent-2` (Merged & pushed to `https://github.com/Sanjai-225/devora.git` per explicit user confirmation)
-> **Live Production Frontend (Vercel):** `https://devora-platform.vercel.app` (`prj_oWWRDxrKRHy2tFK2sTYXZT6qDF9w`)
-> **Live Production Backend + Agent (Render):** `https://devora-backend-rl0i.onrender.com` (`srv-dbk07i49v7es73bamrmg`)
-> **Completed Phases:** **All Phases 0 through 10 (✅ 100% Complete & Live in Production on `main` — `31/31` pytest tests & `22/22` Next.js 16 routes passing)**
+> **Last Updated:** 2026-11-02
+> **Current Active Agent:** **Agent 2** (Completed Phase 11 on `testing` branch — Dual-Role RBAC `user` vs `developer`, Guided Creator UX, Dynamic Multi-Page Synthesizer, and User-Exclusive `⚡ Auto Build Website`)
+> **Active Git Branch:** `testing` (Pushed exclusively to `origin/testing` on `https://github.com/Sanjai-225/devora.git` for user browser testing before any merge to `main`)
+> **Public `testing` Branch Preview URL (Vercel):** `https://devora-platform-git-testing-techno-byte100.vercel.app`
+> **Live Production Frontend (`main` on Vercel):** `https://devora-platform.vercel.app` (`prj_oWWRDxrKRHy2tFK2sTYXZT6qDF9w`)
+> **Live Backend + Agent (Render):** `https://devora-backend-rl0i.onrender.com` (`srv-dbk07i49v7es73bamrmg`)
+> **Completed Phases:** **Phases 0–10 on `main` + Phase 11 (Dual-Role RBAC & User Auto-Build) on `testing` (`34/34` pytest tests & `23/23` Next.js 16 routes passing)**
 
 ---
 
@@ -21,7 +22,7 @@ If you are an AI agent or LLM taking over this repository:
 
 ---
 
-## 2. Phase Completion Matrix (v1.0.0 MVP — 100% Complete)
+## 2. Phase Completion Matrix (Phases 0–11)
 
 | Phase | Name | Status | Automated Verification |
 |-------|------|--------|------------------------|
@@ -35,74 +36,38 @@ If you are an AI agent or LLM taking over this repository:
 | **Phase 7** | Testing & Verification | ✅ COMPLETE | `tests/test_phase7_verification.py` (4/4 passed) |
 | **Phase 8** | Download & Project Management (**Agent 2**) | ✅ COMPLETE | `tests/test_phase8_export.py` (3/3 passed) |
 | **Phase 9** | GitHub & Deployment (**Agent 2**) | ✅ COMPLETE | `tests/test_phase9_deployment.py` (4/4 passed) |
-| **Phase 10** | Security, Polish & v1.0.0 Release (**Agent 2**) | ✅ COMPLETE | `tests/test_phase10_security_and_e2e.py` (4/4 passed — **31/31 total**) |
+| **Phase 10** | Security, Polish & v1.0.0 Release (**Agent 2**) | ✅ COMPLETE | `tests/test_phase10_security_and_e2e.py` (4/4 passed) |
+| **Phase 11** | Dual-Role RBAC (`user` vs `developer`) & User Auto-Build (**Agent 2** on `testing`) | ✅ COMPLETE (`testing`) | `tests/test_phase11_rbac_and_autobuild.py` (3/3 passed — **34/34 total**) |
 
 ---
 
-## 3. Infrastructure, Database, Third-Party Integrations & $0/Month Hosting Summary
+## 3. Phase 11 — Dual-Role RBAC (`user` vs `developer`) & User Auto-Build Summary
 
-### 3.1 Third-Party Integrations Verified Available to Agent 2
-- **GitHub (`GITHUB_TOKEN`):** Authenticated push access to `https://github.com/Sanjai-225/devora.git` (Agent 2 pushed Phases 8, 9, and 10 exclusively to `origin/feature/agent-2`).
-- **Vercel (`VERCEL_TOKEN`):** Connected to `sanjai-225` (`prj_oWWRDxrKRHy2tFK2sTYXZT6qDF9w` — `https://devora-platform.vercel.app`).
-- **Render (`RENDER_API_KEY`):** Connected to `My Workspace` (`srv-dbk07i49v7es73bamrmg` — `https://devora-backend-rl0i.onrender.com`).
-- **Gemini API (`GEMINI_API_KEY`):** Configured for Devora's LangGraph agent workflow (`gemini-2.5-flash`).
-- **Firebase / Firestore:** Connected to `rapid-shift-r8chg` (and AI Studio Remix database `ai-studio-remixdevora-a6abb029-cc39-4103-8594-7097449e25df`).
+### 3.1 Two Distinct RBAC Profiles & Credentials
+1. **Developer Role (`developer`):**
+   - **Login ID:** `sanjay22522g@gmail.com` (also accepts `sanjai22522g@gmail.com` / `techno22522g@gmail.com`)
+   - **Password:** `sanjai@2006`
+   - **Capabilities:** Full Engineering Console — raw AES-256 `.env` tables (`Table View` + `Raw .env`), PostgreSQL handshake tester, Git branch controls, and Platform Integrations vault (`/integrations`).
+2. **User Role (`user` — Guided Website Creator):**
+   - **Preset Login ID:** `creator@devora.app` / `user@2026` (or any newly created user account via `/create-account` or `/sign-in` with `User` role selected)
+   - **Capabilities:**
+     - Guided 4-Step Website Creator Dashboard with clear app workflow explanation and zero intimidating DevOps jargon.
+     - **Exclusive `⚡ Auto Build Website` Feature:** User enters a natural-language website prompt and clicks **"⚡ Auto Build Website"**. Devora automatically configures all default database, auth, and routing settings behind the scenes and launches a **high-level 5-page interactive website** in a **separate browser tab** (`/preview/[projectId]`).
+     - **Full Capabilities Preserved (Zero Minimization):** Users can view AI suggestions (pages, color palette, tech stack, features), customize tech stack, use Design Studio, request live AI modifications, inspect/edit all files in Workspace, run tests, download ZIP, and click **"Deploy to My Own Account"** to deploy using their own Vercel/Render/GitHub credentials.
 
-### 3.2 Cloud Firestore & Authentication (Firebase Spark Free Plan)
-- **Meaningful Collection & Subcollection Names (`firebase-blueprint.json` & `firestore.rules`):**
-  - `/users/{userId}` — User profiles
-  - `/users/{userId}/integrations/{provider}` — Phase 9 masked third-party integration status (`github`, `vercel`, `render`)
-  - `/projects/{projectId}` — Website projects
-  - `/projects/{projectId}/conversations/{messageId}` — Agent-user conversation messages
-  - `/projects/{projectId}/designVersions/{versionId}` — Versioned UI prototypes & design tokens
-  - `/projects/{projectId}/configurations/{configId}` — Masked environment variable metadata (raw secrets never stored in Firestore)
-  - `/projects/{projectId}/implementationPlans/{planId}` — Multi-step implementation plans
-  - `/projects/{projectId}/workspaces/{workspaceId}` — Isolated workspace status, port, PID, and hosting tier
-  - `/projects/{projectId}/gitCheckpoints/{checkpointId}` — Git commit checkpoints inside workspace
-  - `/projects/{projectId}/verificationReports/{reportId}` — Phase 7 build, Playwright smoke test, and bounded auto-repair reports
-  - `/projects/{projectId}/exports/{exportId}` — Phase 8 secret-safe ZIP export metadata records
-  - `/projects/{projectId}/deployments/{deploymentId}` — Phase 9 user-confirmed Vercel & Render deployment records
+### 3.2 Dynamic Multi-Page Website Synthesizer (`/frontend/src/lib/website-synthesizer.ts` & `/frontend/src/app/preview/[id]/page.tsx`)
+- Never repeats the same static template: dynamically synthesizes bespoke 5-page websites across **Healthcare/Dental**, **E-Commerce/Retail**, **Real Estate**, **Hospitality/Fine Dining**, **Fitness/Wellness**, **EdTech/Academy**, and **Custom SaaS/Business** prompts.
+- Every generated website opens in a separate tab (`/preview/[id]`) with working multi-page navigation (`Home`, `Services/Catalog`, `Interactive Calculator/Tool`, `Pricing & Booking`, `Contact & FAQ`), interactive widgets (appointment booking, shopping cart, mortgage/ROI calculator, live search), inline AI modification bar, and a **"Deploy to My Own Account"** credential configuration modal.
 
 ---
 
-## 4. Architecture & Codebase Inventory (Full v1.0.0 MVP — Phases 0–10)
-
-### 4.1 Agent Layer (`/agent`)
-- `agent/models/requirements.py`, `design.py`, `configuration.py`, `codegen.py`, `verification.py`
-- `agent/providers/llm_provider.py` & `gemini_provider.py` — Replaceable `LLMProvider` adapter with `GeminiProvider` (`gemini-2.5-flash`) + deterministic offline/dev fallback
-- `agent/tools/workspace_tools.py` — `WorkspaceToolRegistry` (12 tools: `create_file`, `read_file`, `write_file`, `delete_file`, `list_files`, `search_files`, `run_command`, `install_dependencies`, `run_build`, `check_build`, `run_tests`, `inspect_errors`)
-- `agent/workflow/nodes.py`, `design_nodes.py`, `config_nodes.py`, `codegen_nodes.py`, `verification_nodes.py`
-
-### 4.2 Backend Layer (`/backend`)
-- `backend/app/main.py` — FastAPI application (`v1.0.0`) mounting all Phase 1–10 routers under `/api/v1` + `RateLimitAndSecurityMiddleware`
-- `backend/app/middleware/auth.py` & `rate_limit.py` — Firebase/Dev token authentication, cross-user isolation support, sliding-window per-client rate limiting (`429 Too Many Requests`), and security headers (`X-Content-Type-Options: nosniff`)
-- `backend/app/providers/execution_provider.py` & `local_process_manager.py` — Isolated workspace creation in `/tmp/devora/workspaces`, `PathTraversalError` guard, dynamic port allocation (`4100–4999`), OS PID-tracked process lifecycle, timeout-bounded command execution with secret redaction
-- `backend/app/services/`:
-  - `project_service.py`, `firestore_service.py`, `conversation_service.py`, `design_service.py`, `configuration_service.py`, `workspace_service.py`, `codegen_service.py`
-  - `export_service.py` (**Phase 8 — Agent 2**) — Secret-safe ZIP archive packaging, `.env.example` & standalone `README.md` generation
-  - `deployment_service.py` (**Phase 9 — Agent 2**) — GitHub OAuth URL & masked credential vault, secret-safe GitHub repository push, and user-confirmed Vercel Hobby & Render Free Web Service deployment adapters
-- `backend/app/api/routes/`:
-  - `auth.py`, `users.py`, `projects.py`, `agent.py`, `design.py`, `configuration.py`, `workspace.py`, `integrations.py`
-
-### 4.3 Frontend Layer (`/frontend` — 22 Next.js 16 App Router Routes)
-- Auth pages: `/sign-in`, `/create-account`, `/password-recovery`
-- App pages: `/dashboard`, `/create-website`, `/projects`, `/integrations` (**Phase 9 — Agent 2**), `/settings`
-- Project workflow pages:
-  - `/projects/[id]/requirements` (Phase 2)
-  - `/projects/[id]/workflow-decision` & `/workflow-decision` (Phase 3)
-  - `/projects/[id]/design-studio` & `/design-studio` (Phase 3)
-  - `/projects/[id]/configuration` & `/configuration` (Phase 4)
-  - `/projects/[id]/workspace` & `/workspace` (Phases 5–8)
-
----
-
-## 5. How to Run Verification Tests
+## 4. How to Run Verification Tests
 
 ```bash
-# 1. Run all Python backend & agent tests (Phases 2 through 10 — 31 tests total)
+# 1. Run all Python backend & agent tests (Phases 2 through 11 — 34 tests total)
 PYTHONPATH=/app/applet:/app/applet/backend /tmp/devora-venv/bin/pytest tests/ -v
 
-# 2. Run Next.js 16 production build (verifies all 22 routes and TypeScript strict mode)
+# 2. Run Next.js 16 production build (verifies all 23 routes including /preview/[id] and TypeScript strict mode)
 NODE_ENV=production npm --prefix /app/applet/frontend run build
 
 # 3. Validate Firestore security rules
