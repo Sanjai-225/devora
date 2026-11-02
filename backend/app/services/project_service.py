@@ -142,11 +142,18 @@ async def list_projects(
 
 
 async def update_project(
-    project_id: str, user_id: str, request: UpdateProjectRequest
+    project_id: str,
+    user_id: str,
+    request: Optional[UpdateProjectRequest] = None,
+    data: Optional[UpdateProjectRequest] = None,
 ) -> Optional[ProjectResponse]:
     """Update a project, verifying ownership."""
+    payload = request or data
+    if payload is None:
+        return await get_project(project_id, user_id)
+
     db = get_firestore_client()
-    updates = {k: v for k, v in request.model_dump().items() if v is not None}
+    updates = {k: v for k, v in payload.model_dump().items() if v is not None}
     updates["updated_at"] = _now_iso()
 
     if db:
@@ -154,19 +161,19 @@ async def update_project(
         doc = doc_ref.get()
         if not doc.exists:
             return None
-        data = doc.to_dict()
-        if data.get("user_id") != user_id:
+        doc_data = doc.to_dict()
+        if doc_data.get("user_id") != user_id:
             return None
         doc_ref.update(updates)
-        data.update(updates)
-        data["id"] = project_id
-        return _project_to_response(data)
+        doc_data.update(updates)
+        doc_data["id"] = project_id
+        return _project_to_response(doc_data)
     else:
-        data = _dev_projects.get(project_id)
-        if not data or data.get("user_id") != user_id:
+        doc_data = _dev_projects.get(project_id)
+        if not doc_data or doc_data.get("user_id") != user_id:
             return None
-        data.update(updates)
-        return _project_to_response(data)
+        doc_data.update(updates)
+        return _project_to_response(doc_data)
 
 
 async def delete_project(project_id: str, user_id: str) -> bool:
@@ -190,3 +197,27 @@ async def delete_project(project_id: str, user_id: str) -> bool:
         del _dev_projects[project_id]
         logger.info(f"Project {project_id} deleted from memory")
         return True
+
+
+async def verify_project_ownership(project_id: str, user_id: str) -> bool:
+    """Verify that if `project_id` is registered, it belongs to `user_id`.
+
+    Raises PermissionError if the project belongs to another user.
+    """
+    db = get_firestore_client()
+    if db:
+        doc = db.collection("projects").document(project_id).get()
+        if doc.exists:
+            owner_id = doc.to_dict().get("user_id")
+            if owner_id and owner_id != user_id:
+                raise PermissionError(
+                    f"Cross-project access denied: project '{project_id}' belongs to another user."
+                )
+    else:
+        data = _dev_projects.get(project_id)
+        if data and data.get("user_id") and data.get("user_id") != user_id:
+            raise PermissionError(
+                f"Cross-project access denied: project '{project_id}' belongs to another user."
+            )
+    return True
+

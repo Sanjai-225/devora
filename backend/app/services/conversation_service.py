@@ -116,3 +116,8 @@ async def clear_messages(project_id: str) -> None:
             doc.reference.delete()
     else:
         _dev_conversations.pop(project_id, None)
+
+
+# Alias used by design routes
+save_message = add_message
+

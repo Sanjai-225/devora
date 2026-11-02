@@ -32,8 +32,8 @@ export function Sidebar() {
         <span className="text-lg font-semibold text-text-primary tracking-tight">
           <span className="text-cyan">D</span>evora
         </span>
-        <span className="text-[10px] font-mono bg-surface-3 text-text-secondary px-1.5 py-0.5 rounded">
-          v0.1
+        <span className="text-[10px] font-mono bg-surface-3 text-cyan px-1.5 py-0.5 rounded border border-cyan/30">
+          v1.0
         </span>
       </div>
 

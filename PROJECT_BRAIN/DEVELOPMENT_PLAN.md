@@ -12,9 +12,9 @@
 | 5 | Workspace & Execution | ✅ COMPLETE | Phase 1 |
 | 6 | Code Generation & Editing | ✅ COMPLETE | Phase 4, 5 |
 | 7 | Testing & Verification | ✅ COMPLETE | Phase 6 |
-| 8 | Download & Project Mgmt | 🔄 NEXT | Phase 6 |
-| 9 | GitHub & Deployment | 🔲 | Phase 8 |
-| 10 | Security, Polish & Release | 🔲 | All |
+| 8 | Download & Project Mgmt | ✅ COMPLETE | Phase 6 |
+| 9 | GitHub & Deployment | ✅ COMPLETE | Phase 8 |
+| 10 | Security, Polish & Release | ✅ COMPLETE | All |
 
 ---
 
@@ -198,53 +198,53 @@
 
 ---
 
-## Phase 8 — Download & Project Management 🔄 NEXT
+## Phase 8 — Download & Project Management ✅ (Agent 2)
 
 **Deliverable:** User can download an independent copy of the generated project.
 
-- [ ] Implement ZIP archive creation
-- [ ] Implement secret exclusion from ZIP
-- [ ] Implement .env.example generation
-- [ ] Implement README generation for exported projects
-- [ ] Implement ZIP download endpoint
-- [ ] Implement project version history UI
-- [ ] Implement project restore/rollback
-- [ ] Test: ZIP contents verification
-- [ ] Test: exported project runs independently
+- [x] Implement ZIP archive creation
+- [x] Implement secret exclusion from ZIP
+- [x] Implement .env.example generation
+- [x] Implement README generation for exported projects
+- [x] Implement ZIP download endpoint
+- [x] Implement project version history UI
+- [x] Implement project restore/rollback
+- [x] Test: ZIP contents verification
+- [x] Test: exported project runs independently
 
 ---
 
-## Phase 9 — GitHub & Deployment 🔲
+## Phase 9 — GitHub & Deployment ✅ (Agent 2)
 
 **Deliverable:** User can optionally publish their project through their own connected account.
 
-- [ ] Implement GitHub OAuth flow
-- [ ] Implement repository creation/selection
-- [ ] Implement Git push to GitHub
-- [ ] Implement Vercel deployment adapter
-- [ ] Implement Render deployment adapter
-- [ ] Implement deployment confirmation UI
-- [ ] Implement deployment status tracking
-- [ ] Implement integrations page
-- [ ] Test: GitHub push flow
-- [ ] Test: Vercel deployment
+- [x] Implement GitHub OAuth flow
+- [x] Implement repository creation/selection
+- [x] Implement Git push to GitHub
+- [x] Implement Vercel deployment adapter
+- [x] Implement Render deployment adapter
+- [x] Implement deployment confirmation UI
+- [x] Implement deployment status tracking
+- [x] Implement integrations page
+- [x] Test: GitHub push flow
+- [x] Test: Vercel deployment
 
 ---
 
-## Phase 10 — Security, Polish & Release 🔲
+## Phase 10 — Security, Polish & Release ✅ (Agent 2)
 
 **Deliverable:** Documented, tested, deployable Devora MVP.
 
-- [ ] Cross-project isolation tests
-- [ ] Authentication and authorization tests
-- [ ] Rate limiting verification
-- [ ] End-to-end scenario testing (Scenarios A-F)
-- [ ] Performance optimization
-- [ ] Error handling review
-- [ ] Logging review
-- [ ] Documentation review
-- [ ] Final Stitch design compliance check
-- [ ] Known limitations documented
+- [x] Cross-project isolation tests
+- [x] Authentication and authorization tests
+- [x] Rate limiting verification
+- [x] End-to-end scenario testing (Scenarios A-F)
+- [x] Performance optimization
+- [x] Error handling review
+- [x] Logging review
+- [x] Documentation review
+- [x] Final Stitch design compliance check
+- [x] Known limitations documented
 
 ---
 
@@ -260,4 +260,9 @@
 | 2026-11-01 | 5 | Workspace & Execution + Free-Tier Hosting: ExecutionProvider & LocalProcessManager (isolated workspaces in `/tmp/devora/workspaces`, strict path traversal guard, port allocation `4100-4999`, PID-tracked process lifecycle, timeout-bounded command execution with secret redaction), Workspace REST API + 3-column Workspace UI, Vercel (`frontend/vercel.json`) & Render Free-Tier Blueprint (`render.yaml`), and Phase 5 automated test suite |
 | 2026-11-01 | 6 | Code Generation, Surgical Incremental Editing & Multi-Agent Continuity: WorkspaceToolRegistry (`create_file`, `read_file`, `write_file`, `delete_file`, `list_files`, `search_files`, `run_command`, `install_dependencies`, `run_build`), `codegen_nodes.py` (`generate_project_code`, `apply_incremental_edit` preserving untouched files with unified diffs, real Git checkpoint creation/listing/rollback), Workspace Diff Viewer & Deployment Confirmation Gate UI, `PROJECT_CURRENT_STATUS.md` + `COMMIT_AND_CHANGE_LOG.md`, and Phase 6 automated test suite |
 | 2026-11-01 | 7 | Testing, Build Verification & Bounded Self-Repair Loop: `agent/models/verification.py`, `check_build`, `inspect_errors`, and `run_tests` in `WorkspaceToolRegistry` (12 tools), `verification_nodes.py` (`analyze_workspace_errors`, `repair_single_attempt`, `run_verification_and_repair_loop` strictly capped at max 3 attempts), `POST /verify` and `POST /repair` endpoints, Workspace Tests & Auto-Repair UI tab, and Phase 7 automated test suite (`20/20 passed`) |
+| 2026-11-01 | 8 | **Agent 2 (`feature/agent-2`)**: Secret-Safe ZIP Export & Standalone Project Management (`backend/app/services/export_service.py`, `.env.example` & standalone `README.md` generation, `.env`/`.git`/`node_modules` exclusion + inline secret token scrubbing, `GET /export/metadata` & `GET /export` endpoints, Workspace Export ZIP & Version History Rollback UI tab, and Phase 8 automated test suite — `23/23 passed`) |
+| 2026-11-01 | 9 | **Agent 2 (`feature/agent-2`)**: GitHub Integrations & $0/Month Cloud Deployment (`backend/app/services/deployment_service.py`, `backend/app/api/routes/integrations.py`, popup-compatible GitHub OAuth URL & masked credential vault, secret-safe GitHub repository push, user-confirmed Vercel Hobby & Render Free Web Service deployment adapters, `/integrations` Next.js page, and `tests/test_phase9_deployment.py` — `27/27 passed`) |
+| 2026-11-01 | 10 | **Agent 2 (`feature/agent-2`)**: Security Hardening, Rate Limiting, Cross-Project Isolation & v1.0.0 MVP Release (`backend/app/middleware/rate_limit.py`, router-level ownership enforcement across `/projects/{id}/workspace/*`, `X-Content-Type-Options: nosniff` + sliding-window rate-limiting headers, End-to-End Scenarios A–F in `tests/test_phase10_security_and_e2e.py` — `31/31 passed`, `22/22` Next.js 16 routes compiled) |
+
+
 
