@@ -221,3 +221,100 @@ async def verify_deployment_confirmation(
         verification_checklist=checklist,
         confirmed_at=_now_iso(),
     )
+
+
+async def _sync_verification_report_to_firestore(
+    project_id: str,
+    user_id: str,
+    report: Any,
+) -> None:
+    """Persist Phase 7 verification report metadata to Firestore (/projects/{projectId}/verificationReports/{id})."""
+    db = get_firestore_client()
+    if db is not None:
+        try:
+            db.collection("projects").document(project_id).collection(
+                "verificationReports"
+            ).document(report.report_id).set(
+                {
+                    "id": report.report_id,
+                    "projectId": project_id,
+                    "userId": user_id,
+                    "overallStatus": report.overall_status,
+                    "buildPassed": report.build_check.passed,
+                    "testsPassed": report.test_suite.passed,
+                    "totalTests": report.test_suite.total_tests,
+                    "passedTests": report.test_suite.passed_tests,
+                    "failedTests": report.test_suite.failed_tests,
+                    "repairAttempts": report.repair_attempts,
+                    "maxRepairAttempts": report.max_repair_attempts,
+                    "summary": report.summary,
+                    "verifiedAt": report.verified_at,
+                }
+            )
+        except Exception as e:
+            logger.warning(f"Firestore verificationReport sync skipped: {e}")
+
+
+async def verify_project_workspace(
+    project_id: str,
+    user_id: str,
+    auto_repair: bool = False,
+) -> Any:
+    """Run Phase 7 build check, Playwright smoke suite, error analysis, and optional bounded auto-repair."""
+    from agent.workflow.verification_nodes import run_verification_and_repair_loop
+
+    provider = get_execution_provider()
+    report = await run_verification_and_repair_loop(
+        project_id=project_id,
+        auto_repair=auto_repair,
+        max_attempts=3,
+        provider=provider,
+    )
+    await _sync_verification_report_to_firestore(project_id, user_id, report)
+
+    await firestore_service.update_project(
+        project_id,
+        user_id,
+        UpdateProjectRequest(
+            status=(
+                ProjectStatus.READY
+                if report.overall_status in ("passed", "repaired")
+                else ProjectStatus.FAILED
+            ),
+            current_agent_stage=f"verified_{report.overall_status}",
+        ),
+    )
+    return report
+
+
+async def repair_project_workspace(
+    project_id: str,
+    user_id: str,
+    max_attempts: int = 3,
+) -> Any:
+    """Run the Phase 7 bounded auto-repair loop (strictly capped at max 3 attempts)."""
+    from agent.workflow.verification_nodes import run_verification_and_repair_loop
+
+    provider = get_execution_provider()
+    report = await run_verification_and_repair_loop(
+        project_id=project_id,
+        auto_repair=True,
+        max_attempts=min(max(1, max_attempts), 3),
+        provider=provider,
+    )
+    await _sync_verification_report_to_firestore(project_id, user_id, report)
+
+    await firestore_service.update_project(
+        project_id,
+        user_id,
+        UpdateProjectRequest(
+            status=(
+                ProjectStatus.READY
+                if report.overall_status in ("passed", "repaired")
+                else ProjectStatus.FAILED
+            ),
+            current_agent_stage=f"repair_{report.overall_status}",
+        ),
+    )
+    return report
+

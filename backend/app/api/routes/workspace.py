@@ -12,14 +12,17 @@ from app.models.schemas import (
     GitCheckpointSchema,
     IncrementalEditRequest,
     IncrementalEditResponse,
+    VerificationReportResponse,
     WorkspaceCommandRequest,
     WorkspaceCommandResponse,
     WorkspaceFileReadResponse,
     WorkspaceFileSchema,
     WorkspaceFileWriteRequest,
     WorkspaceLogSchema,
+    WorkspaceRepairRequest,
     WorkspaceSearchMatchSchema,
     WorkspaceStatusResponse,
+    WorkspaceVerifyRequest,
 )
 from app.providers.local_process_manager import (
     PathTraversalError,
@@ -355,4 +358,41 @@ async def get_workspace_logs(
         return [WorkspaceLogSchema(**lg.model_dump()) for lg in logs]
     except PathTraversalError as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
+
+
+@router.post("/verify", response_model=VerificationReportResponse)
+async def verify_workspace_build_and_tests(
+    project_id: str,
+    payload: WorkspaceVerifyRequest = WorkspaceVerifyRequest(),
+    current_user: AuthenticatedUser = Depends(get_current_user),
+):
+    """Phase 7: Run build check, Playwright smoke suite, and error analysis (with optional auto-repair)."""
+    try:
+        report = await codegen_service.verify_project_workspace(
+            project_id=project_id,
+            user_id=current_user.uid,
+            auto_repair=payload.auto_repair,
+        )
+        return VerificationReportResponse(**report.model_dump())
+    except PathTraversalError as e:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=str(e))
+
+
+@router.post("/repair", response_model=VerificationReportResponse)
+async def repair_workspace_errors_bounded(
+    project_id: str,
+    payload: WorkspaceRepairRequest = WorkspaceRepairRequest(),
+    current_user: AuthenticatedUser = Depends(get_current_user),
+):
+    """Phase 7: Run bounded surgical auto-repair loop (strictly capped at max 3 attempts)."""
+    try:
+        report = await codegen_service.repair_project_workspace(
+            project_id=project_id,
+            user_id=current_user.uid,
+            max_attempts=payload.max_attempts,
+        )
+        return VerificationReportResponse(**report.model_dump())
+    except PathTraversalError as e:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=str(e))
+
 

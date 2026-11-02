@@ -462,6 +462,103 @@ class DeploymentConfirmationResponse(BaseModel):
     confirmed_at: str
 
 
+class BuildCheckResultSchema(BaseModel):
+    project_id: str
+    passed: bool
+    exit_code: int = 0
+    checked_files_count: int = 0
+    broken_files: list[str] = Field(default_factory=list)
+    errors: list[str] = Field(default_factory=list)
+    stdout: str = ""
+    stderr: str = ""
+    duration_ms: int = 0
+    checked_at: str
+
+
+class ConsoleErrorEntrySchema(BaseModel):
+    id: str
+    source: Literal["build", "console", "runtime", "test"] = "build"
+    severity: Literal["error", "warning"] = "error"
+    file_path: Optional[str] = None
+    line_number: Optional[int] = None
+    message: str
+    suggestion: str = ""
+
+
+class PlaywrightTestCaseResultSchema(BaseModel):
+    test_id: str
+    name: str
+    route_or_target: str
+    status: Literal["passed", "failed", "skipped"] = "passed"
+    duration_ms: int = 12
+    assertion_summary: str = ""
+    error_message: Optional[str] = None
+
+
+class PlaywrightSmokeSuiteResultSchema(BaseModel):
+    project_id: str
+    passed: bool
+    total_tests: int = 0
+    passed_tests: int = 0
+    failed_tests: int = 0
+    duration_ms: int = 0
+    test_cases: list[PlaywrightTestCaseResultSchema] = Field(default_factory=list)
+    executed_at: str
+
+
+class ErrorAnalysisResultSchema(BaseModel):
+    project_id: str
+    has_errors: bool
+    error_count: int = 0
+    affected_files: list[str] = Field(default_factory=list)
+    root_cause_summary: str = ""
+    recommended_fixes: list[str] = Field(default_factory=list)
+    console_errors: list[ConsoleErrorEntrySchema] = Field(default_factory=list)
+    analyzed_at: str
+
+
+class RepairAttemptRecordSchema(BaseModel):
+    attempt_number: int = Field(..., ge=1, le=3)
+    files_repaired: list[str] = Field(default_factory=list)
+    fix_description: str
+    build_passed_after: bool = False
+    tests_passed_after: bool = False
+    remaining_errors_count: int = 0
+    checkpoint_sha: Optional[str] = None
+    repaired_at: str
+
+
+class WorkspaceVerifyRequest(BaseModel):
+    auto_repair: bool = Field(
+        False,
+        description="Whether to automatically trigger the bounded 3-attempt repair loop if errors are detected",
+    )
+
+
+class WorkspaceRepairRequest(BaseModel):
+    max_attempts: int = Field(
+        3,
+        ge=1,
+        le=3,
+        description="Maximum number of bounded surgical repair attempts (strictly capped at 3)",
+    )
+
+
+class VerificationReportResponse(BaseModel):
+    report_id: str
+    project_id: str
+    overall_status: Literal["passed", "repaired", "failed"] = "passed"
+    build_check: BuildCheckResultSchema
+    test_suite: PlaywrightSmokeSuiteResultSchema
+    error_analysis: ErrorAnalysisResultSchema
+    repair_attempts: int = 0
+    max_repair_attempts: int = 3
+    repair_history: list[RepairAttemptRecordSchema] = Field(default_factory=list)
+    latest_checkpoint_sha: Optional[str] = None
+    summary: str
+    verified_at: str
+
+
 class ErrorResponse(BaseModel):
     error: dict = Field(
         ...,
@@ -476,8 +573,9 @@ class ErrorResponse(BaseModel):
 
 class HealthResponse(BaseModel):
     status: str = "ok"
-    version: str = "0.6.0"
+    version: str = "0.7.0"
     dev_mode: bool = False
     firebase_connected: bool = False
+
 
 

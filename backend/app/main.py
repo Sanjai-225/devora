@@ -34,7 +34,7 @@ async def lifespan(app: FastAPI):
 app = FastAPI(
     title="Devora API",
     description="AI-powered website development platform backend",
-    version="0.5.0",
+    version="0.7.0",
     lifespan=lifespan,
 )
 
@@ -64,7 +64,7 @@ async def health_check():
 
     return HealthResponse(
         status="ok",
-        version="0.5.0",
+        version="0.7.0",
         dev_mode=settings.dev_mode,
         firebase_connected=get_firestore_client() is not None,
     )

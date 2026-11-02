@@ -250,6 +250,26 @@ Initiate GitHub OAuth flow.
 ### DELETE `/api/v1/integrations/{provider}/disconnect`
 Disconnect an integration.
 
+### POST `/api/v1/projects/{projectId}/workspace/verify`
+Run build check (`check_build`), Playwright smoke suite (`run_tests`), and console/runtime error analysis (`inspect_errors`), with optional bounded auto-repair.
+
+**Body:**
+```json
+{
+  "auto_repair": false
+}
+```
+
+### POST `/api/v1/projects/{projectId}/workspace/repair`
+Trigger the bounded surgical self-repair loop (strictly capped at max 3 attempts) and create a Git checkpoint for repaired files.
+
+**Body:**
+```json
+{
+  "max_attempts": 3
+}
+```
+
 ## Deployment
 
 ### POST `/api/v1/projects/{projectId}/deploy`

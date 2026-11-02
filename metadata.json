@@ -1,6 +1,8 @@
 {
-  "name": "Devora — Autonomous Web Development Agent",
-  "description": "AI-powered website development platform where users describe websites in natural language and Devora analyzes requirements, designs prototypes, builds, tests, and packages full-stack web applications.",
+  "name": "Remix Devora",
+  "description": "Autonomous AI-powered website development platform orchestrating requirement analysis, interactive design studio prototyping, full-stack Next.js/React code synthesis, isolated workspace execution, and 1-click free-tier hosting.",
   "requestFramePermissions": [],
-  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
 }

@@ -401,8 +401,37 @@ export const api = {
       },
       token,
     ),
+
+  // Testing, Verification & Bounded Auto-Repair (Phase 7)
+  verifyWorkspace: (
+    token: string,
+    projectId: string,
+    autoRepair = false,
+  ) =>
+    request<import('@/types').VerificationReport>(
+      `/projects/${projectId}/workspace/verify`,
+      {
+        method: 'POST',
+        body: JSON.stringify({ auto_repair: autoRepair }),
+      },
+      token,
+    ),
+  repairWorkspace: (
+    token: string,
+    projectId: string,
+    maxAttempts = 3,
+  ) =>
+    request<import('@/types').VerificationReport>(
+      `/projects/${projectId}/workspace/repair`,
+      {
+        method: 'POST',
+        body: JSON.stringify({ max_attempts: maxAttempts }),
+      },
+      token,
+    ),
 };
 
 export { ApiError };
+
 
 

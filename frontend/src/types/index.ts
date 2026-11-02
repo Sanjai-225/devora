@@ -396,6 +396,87 @@ export interface DeploymentConfirmationResult {
   confirmed_at: string;
 }
 
+export interface BuildCheckResult {
+  project_id: string;
+  passed: boolean;
+  exit_code: number;
+  checked_files_count: number;
+  broken_files: string[];
+  errors: string[];
+  stdout: string;
+  stderr: string;
+  duration_ms: number;
+  checked_at: string;
+}
+
+export interface ConsoleErrorEntry {
+  id: string;
+  source: 'build' | 'console' | 'runtime' | 'test';
+  severity: 'error' | 'warning';
+  file_path?: string | null;
+  line_number?: number | null;
+  message: string;
+  suggestion: string;
+}
+
+export interface PlaywrightTestCaseResult {
+  test_id: string;
+  name: string;
+  route_or_target: string;
+  status: 'passed' | 'failed' | 'skipped';
+  duration_ms: number;
+  assertion_summary: string;
+  error_message?: string | null;
+}
+
+export interface PlaywrightSmokeSuiteResult {
+  project_id: string;
+  passed: boolean;
+  total_tests: number;
+  passed_tests: number;
+  failed_tests: number;
+  duration_ms: number;
+  test_cases: PlaywrightTestCaseResult[];
+  executed_at: string;
+}
+
+export interface ErrorAnalysisResult {
+  project_id: string;
+  has_errors: boolean;
+  error_count: number;
+  affected_files: string[];
+  root_cause_summary: string;
+  recommended_fixes: string[];
+  console_errors: ConsoleErrorEntry[];
+  analyzed_at: string;
+}
+
+export interface RepairAttemptRecord {
+  attempt_number: number;
+  files_repaired: string[];
+  fix_description: string;
+  build_passed_after: boolean;
+  tests_passed_after: boolean;
+  remaining_errors_count: number;
+  checkpoint_sha?: string | null;
+  repaired_at: string;
+}
+
+export interface VerificationReport {
+  report_id: string;
+  project_id: string;
+  overall_status: 'passed' | 'repaired' | 'failed';
+  build_check: BuildCheckResult;
+  test_suite: PlaywrightSmokeSuiteResult;
+  error_analysis: ErrorAnalysisResult;
+  repair_attempts: number;
+  max_repair_attempts: number;
+  repair_history: RepairAttemptRecord[];
+  latest_checkpoint_sha?: string | null;
+  summary: string;
+  verified_at: string;
+}
+
 export interface ProjectListResponse {
   projects: Project[];
   total: number;
