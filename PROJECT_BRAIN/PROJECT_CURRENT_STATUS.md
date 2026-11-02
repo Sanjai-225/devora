@@ -53,12 +53,14 @@ If you are a new AI agent or LLM taking over this repository:
   - `/projects/{projectId}/workspaces/{workspaceId}` — Isolated workspace status, port, PID, and hosting tier
   - `/projects/{projectId}/gitCheckpoints/{checkpointId}` — Git commit checkpoints inside workspace
 
-### 3.2 100% Free-Tier Hosting Blueprint ($0.00/Month)
+### 3.2 100% Free-Tier Hosting Blueprint ($0.00/Month) & Connected Accounts
 1. **Frontend — Vercel (Hobby Free Plan):**
    - Configured via `/frontend/vercel.json` (Next.js 16, Root Directory: `frontend`).
+   - **Connected Account:** `sanjai-225` (`sanjay22522g@gmail.com`) verified via `VERCEL_TOKEN` (stored only in server runtime environment, never in Git).
 2. **Backend + LangGraph Agent — Render (Free Web Service):**
    - Configured via `/render.yaml` (`plan: free`).
    - Uses `/tmp/devora/workspaces` and `/tmp/devora/checkpoints/agent.db` + Firestore state sync so **no paid Render Persistent Disk is required**.
+   - **Connected Account:** `sanjay22522g@gmail.com` (`My Workspace` / `W2` / `w3` / `w4`) verified via `RENDER_API_KEY` (stored only in server runtime environment, never in Git).
 3. **Database & Auth — Firebase Spark Plan (Free):**
    - Configured via `/firebase-applet-config.json` and `/firestore.rules`.
 
