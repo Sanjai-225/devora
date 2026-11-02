@@ -5,6 +5,29 @@
 
 ---
 
+## [2026-11-01] Phases 9 & 10 — GitHub Integrations, $0/Month Cloud Deployment, Security Hardening & v1.0.0 MVP Release (Authored by **Agent 2** on `feature/agent-2`)
+- **Author / Agent Identity:** **Agent 2**
+- **Active Branch:** `feature/agent-2` (pushed exclusively to `origin/feature/agent-2` on `https://github.com/Sanjai-225/devora.git`)
+- **Phase Status:** Phases 9 & 10 ✅ COMPLETE (**All Phases 0–10 100% Complete — `v1.0.0 MVP`**)
+- **Summary of Changes by Agent 2:**
+  1. **Phase 9 — GitHub Integration & Free-Tier Cloud Deployment Service (`backend/app/services/deployment_service.py`, `backend/app/api/routes/integrations.py`):**
+     - Implemented `build_github_oauth_url` (direct `https://github.com/login/oauth/authorize` URL for popup-based OAuth in iframe environments).
+     - Implemented `connect_user_integration`, `disconnect_user_integration`, and `list_user_integrations` with server-side secret masking (`_mask_token`) and Firestore sync (`/users/{userId}/integrations/{provider}`).
+     - Implemented `push_project_to_github` (packages generated workspace files, records Git checkpoint SHA, and enforces Phase 8 secret exclusion so `.env` and private keys are never pushed).
+     - Implemented `trigger_cloud_deployment` and `list_project_deployments` for **Vercel Hobby (`$0.00/mo`)** and **Render Free Web Service (`$0.00/mo`)**, strictly enforcing `user_confirmed=True` before any deployment.
+  2. **Phase 9 — Frontend Integrations & Deployment Hub (`frontend/src/app/(app)/integrations/page.tsx`, `frontend/src/lib/api.ts`, `frontend/src/types/index.ts`, `frontend/src/components/layout/sidebar.tsx`, `src/App.tsx`):**
+     - Created `/integrations` page matching the Obsidian Cyan Precision design system with Connected Cloud & Git Integrations cards, Secret-Safe GitHub Repository Push form, User-Confirmed Cloud Deployment gate, and Live Deployment Status & History table.
+     - Updated sidebar and AI Studio preview badges to `v1.0`.
+  3. **Phase 10 — Security Hardening, Cross-Project Isolation, Rate Limiting & E2E Scenarios A–F (`backend/app/middleware/rate_limit.py`, `backend/app/middleware/auth.py`, `backend/app/services/project_service.py`, `backend/app/api/routes/workspace.py`, `backend/app/main.py`):**
+     - Added `RateLimitAndSecurityMiddleware` enforcing sliding-window per-client rate limits (`429 Too Many Requests` + `Retry-After`) and `X-Content-Type-Options: nosniff` / `Referrer-Policy` headers.
+     - Added `verify_project_ownership` and router-level ownership enforcement across `/projects/{project_id}/workspace/*`, `/github/push`, and `/deploy` to prevent cross-user and cross-project access (`403 Forbidden`).
+     - Added `save_message` alias in `conversation_service.py` and flexible `request`/`data` parameter handling in `project_service.update_project`.
+  4. **Automated Verification (`tests/test_phase9_deployment.py` & `tests/test_phase10_security_and_e2e.py`):**
+     - Added 4 Phase 9 tests and 4 Phase 10 security/E2E tests (including full autonomous E2E Scenarios A–F from natural-language prompt -> Design Studio -> Configuration & Secret Vault -> Codegen & Surgical Edit -> Build/Playwright Verification -> Secret-Safe ZIP Export -> Confirmed Cloud Deployment).
+     - **31/31** pytest tests across Phases 2–10 passed; **22/22** Next.js 16 production routes compiled cleanly.
+
+---
+
 ## [2026-11-01] Phase 8 — Secret-Safe ZIP Export & Standalone Project Management (Authored by **Agent 2** on `feature/agent-2`)
 - **Author / Agent Identity:** **Agent 2** (Continuing from Agent 1's Phase 0–7 handoff)
 - **Active Branch:** `feature/agent-2` (branched from `origin/main` and pushed exclusively to `origin/feature/agent-2`)

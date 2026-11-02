@@ -573,6 +573,76 @@ class ProjectExportMetadataResponse(BaseModel):
     exported_at: str
 
 
+class IntegrationStatusSchema(BaseModel):
+    provider: Literal["github", "vercel", "render"]
+    display_name: str
+    connected: bool
+    account_handle: str
+    masked_token: str = ""
+    scopes: list[str] = Field(default_factory=list)
+    free_tier_plan: str
+    connected_at: Optional[str] = None
+
+
+class GitHubOAuthUrlResponse(BaseModel):
+    provider: str = "github"
+    auth_url: str
+    redirect_uri: str
+    state: str
+
+
+class ConnectIntegrationRequest(BaseModel):
+    provider: Literal["github", "vercel", "render"]
+    account_handle: str = Field(..., min_length=1, max_length=100)
+    token_or_code: str = Field(..., min_length=4, max_length=500)
+
+
+class GitHubRepoPushRequest(BaseModel):
+    repo_name: str = Field(..., min_length=1, max_length=120)
+    branch: str = Field("testing", min_length=1, max_length=80)
+    commit_message: Optional[str] = Field(None, max_length=240)
+    create_if_missing: bool = True
+
+
+class GitHubRepoPushResponse(BaseModel):
+    project_id: str
+    repository: str
+    repo_url: str
+    branch: str
+    commit_sha: str
+    short_sha: str
+    commit_message: str
+    files_pushed_count: int
+    excluded_secrets: list[str] = Field(default_factory=list)
+    created_repository: bool = True
+    pushed_at: str
+
+
+class CloudDeploymentRequest(BaseModel):
+    provider: Literal["vercel", "render"] = "vercel"
+    user_confirmed: bool = Field(
+        ...,
+        description="Must be True to authorize public deployment",
+    )
+    target_branch: Literal["testing", "main"] = "testing"
+    environment: Literal["preview", "production"] = "preview"
+
+
+class CloudDeploymentRecordSchema(BaseModel):
+    deployment_id: str
+    project_id: str
+    provider: Literal["vercel", "render"]
+    environment: Literal["preview", "production"]
+    target_branch: str
+    status: Literal["queued", "building", "ready", "failed"] = "ready"
+    url: str
+    checkpoint_sha: str
+    free_tier_plan: str
+    estimated_monthly_cost_usd: float = 0.0
+    user_confirmed: bool = True
+    created_at: str
+
+
 class ErrorResponse(BaseModel):
     error: dict = Field(
         ...,
@@ -587,9 +657,10 @@ class ErrorResponse(BaseModel):
 
 class HealthResponse(BaseModel):
     status: str = "ok"
-    version: str = "0.8.0"
+    version: str = "1.0.0"
     dev_mode: bool = False
     firebase_connected: bool = False
+
 
 
 

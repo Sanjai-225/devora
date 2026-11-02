@@ -244,16 +244,22 @@ Generate and download a secret-safe, standalone ZIP archive of the project (`app
 
 **Response:** Binary ZIP file stream (`application/zip`)
 
-## Integrations
+## Integrations & Cloud Deployment (Phase 9 — Agent 2)
 
 ### GET `/api/v1/integrations`
-List user's integrations.
+List user's third-party integrations (`github`, `vercel`, `render`) with masked token previews.
 
-### POST `/api/v1/integrations/github/connect`
-Initiate GitHub OAuth flow.
+### GET `/api/v1/integrations/github/oauth-url`
+Construct a direct GitHub OAuth authorization URL (`https://github.com/login/oauth/authorize`) for popup-based connection.
 
-### DELETE `/api/v1/integrations/{provider}/disconnect`
-Disconnect an integration.
+### POST `/api/v1/integrations/connect`
+Connect or rotate a GitHub, Vercel, or Render credential (stored in server-side vault, masked in responses).
+
+### DELETE `/api/v1/integrations/{provider}`
+Disconnect an integration (`github | vercel | render`).
+
+### POST `/api/v1/projects/{projectId}/github/push`
+Push verified, secret-safe workspace files and Git checkpoint to a GitHub repository branch.
 
 ### POST `/api/v1/projects/{projectId}/workspace/verify`
 Run build check (`check_build`), Playwright smoke suite (`run_tests`), and console/runtime error analysis (`inspect_errors`), with optional bounded auto-repair.
@@ -278,18 +284,20 @@ Trigger the bounded surgical self-repair loop (strictly capped at max 3 attempts
 ## Deployment
 
 ### POST `/api/v1/projects/{projectId}/deploy`
-Initiate deployment.
+Trigger a user-confirmed deployment (`user_confirmed: true`) to Vercel Hobby Free or Render Free Web Service (`$0.00/month`).
 
 **Body:**
 ```json
 {
   "provider": "vercel | render",
-  "config": {}
+  "user_confirmed": true,
+  "target_branch": "testing | main",
+  "environment": "preview | production"
 }
 ```
 
-### GET `/api/v1/projects/{projectId}/deploy/status`
-Check deployment status.
+### GET `/api/v1/projects/{projectId}/deployments`
+List deployment status history for a project.
 
 ## Error Response Format
 

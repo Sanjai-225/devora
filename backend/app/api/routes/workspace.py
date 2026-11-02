@@ -30,8 +30,24 @@ from app.providers.local_process_manager import (
     get_execution_provider,
 )
 from app.services import codegen_service, export_service, workspace_service
+from app.services.project_service import verify_project_ownership
 
-router = APIRouter(prefix="/projects/{project_id}/workspace", tags=["workspace"])
+
+async def _enforce_workspace_ownership(
+    project_id: str,
+    current_user: AuthenticatedUser = Depends(get_current_user),
+) -> None:
+    try:
+        await verify_project_ownership(project_id, current_user.uid)
+    except PermissionError as e:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=str(e))
+
+
+router = APIRouter(
+    prefix="/projects/{project_id}/workspace",
+    tags=["workspace"],
+    dependencies=[Depends(_enforce_workspace_ownership)],
+)
 
 
 @router.get("", response_model=WorkspaceStatusResponse)

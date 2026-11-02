@@ -451,9 +451,90 @@ export const api = {
     }
     return response.blob();
   },
+
+  // GitHub Integrations & Cloud Deployment (Phase 9)
+  listIntegrations: (token: string) =>
+    request<import('@/types').IntegrationStatus[]>('/integrations', {}, token),
+
+  getGitHubOAuthUrl: (token: string, redirectUri?: string) =>
+    request<import('@/types').GitHubOAuthUrlResponse>(
+      `/integrations/github/oauth-url${redirectUri ? `?redirect_uri=${encodeURIComponent(redirectUri)}` : ''}`,
+      {},
+      token,
+    ),
+
+  connectIntegration: (
+    token: string,
+    payload: {
+      provider: 'github' | 'vercel' | 'render';
+      account_handle: string;
+      token_or_code: string;
+    },
+  ) =>
+    request<import('@/types').IntegrationStatus>(
+      '/integrations/connect',
+      {
+        method: 'POST',
+        body: JSON.stringify(payload),
+      },
+      token,
+    ),
+
+  disconnectIntegration: (token: string, provider: 'github' | 'vercel' | 'render') =>
+    request<import('@/types').IntegrationStatus>(
+      `/integrations/${provider}`,
+      { method: 'DELETE' },
+      token,
+    ),
+
+  pushToGitHub: (
+    token: string,
+    projectId: string,
+    payload: {
+      repo_name: string;
+      branch?: string;
+      commit_message?: string;
+      create_if_missing?: boolean;
+    },
+  ) =>
+    request<import('@/types').GitHubRepoPushResult>(
+      `/projects/${projectId}/github/push`,
+      {
+        method: 'POST',
+        body: JSON.stringify(payload),
+      },
+      token,
+    ),
+
+  triggerCloudDeployment: (
+    token: string,
+    projectId: string,
+    payload: {
+      provider: 'vercel' | 'render';
+      user_confirmed: boolean;
+      target_branch: 'testing' | 'main';
+      environment?: 'preview' | 'production';
+    },
+  ) =>
+    request<import('@/types').CloudDeploymentRecord>(
+      `/projects/${projectId}/deploy`,
+      {
+        method: 'POST',
+        body: JSON.stringify(payload),
+      },
+      token,
+    ),
+
+  listProjectDeployments: (token: string, projectId: string) =>
+    request<import('@/types').CloudDeploymentRecord[]>(
+      `/projects/${projectId}/deployments`,
+      {},
+      token,
+    ),
 };
 
 export { ApiError };
+
 
 
 

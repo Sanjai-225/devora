@@ -611,7 +611,7 @@ export default function App() {
             <span className="text-[#00F0FF]">D</span>evora
           </span>
           <span className="text-[10px] font-mono bg-[#00F0FF]/15 text-[#00F0FF] border border-[#00F0FF]/30 px-1.5 py-0.5 rounded">
-            Phase 8 • Agent 2
+            v1.0 MVP • Agent 2
           </span>
         </div>
 

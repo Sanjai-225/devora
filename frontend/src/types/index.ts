@@ -491,6 +491,53 @@ export interface ProjectExportMetadata {
   exported_at: string;
 }
 
+export interface IntegrationStatus {
+  provider: 'github' | 'vercel' | 'render';
+  display_name: string;
+  connected: boolean;
+  account_handle: string;
+  masked_token: string;
+  scopes: string[];
+  free_tier_plan: string;
+  connected_at?: string | null;
+}
+
+export interface GitHubOAuthUrlResponse {
+  provider: string;
+  auth_url: string;
+  redirect_uri: string;
+  state: string;
+}
+
+export interface GitHubRepoPushResult {
+  project_id: string;
+  repository: string;
+  repo_url: string;
+  branch: string;
+  commit_sha: string;
+  short_sha: string;
+  commit_message: string;
+  files_pushed_count: number;
+  excluded_secrets: string[];
+  created_repository: boolean;
+  pushed_at: string;
+}
+
+export interface CloudDeploymentRecord {
+  deployment_id: string;
+  project_id: string;
+  provider: 'vercel' | 'render';
+  environment: 'preview' | 'production';
+  target_branch: string;
+  status: 'queued' | 'building' | 'ready' | 'failed';
+  url: string;
+  checkpoint_sha: string;
+  free_tier_plan: string;
+  estimated_monthly_cost_usd: number;
+  user_confirmed: boolean;
+  created_at: string;
+}
+
 export interface ProjectListResponse {
   projects: Project[];
   total: number;
