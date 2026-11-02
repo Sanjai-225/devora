@@ -54,14 +54,18 @@ If you are a new AI agent or LLM taking over this repository:
   - `/projects/{projectId}/gitCheckpoints/{checkpointId}` — Git commit checkpoints inside workspace
   - `/projects/{projectId}/verificationReports/{reportId}` — Phase 7 build, Playwright smoke test, and bounded auto-repair reports
 
-### 3.2 100% Free-Tier Hosting Blueprint ($0.00/Month) & Connected Accounts
+### 3.2 100% Free-Tier Hosting Blueprint ($0.00/Month) & Connected Live Deployments
 1. **Frontend — Vercel (Hobby Free Plan):**
    - Configured via `/frontend/vercel.json` (Next.js 16, Root Directory: `frontend`).
-   - **Connected Account:** `sanjai-225` (`sanjay22522g@gmail.com`) verified via `VERCEL_TOKEN` (stored only in server runtime environment, never in Git).
+   - **Connected Account:** `sanjai-225` (`sanjay22522g@gmail.com`)
+   - **Live Vercel Project:** `devora-platform` (`prj_oWWRDxrKRHy2tFK2sTYXZT6qDF9w`, Auto-Deploy enabled on `Sanjai-225/devora` branch `main`)
+   - **Deployment URL:** `https://devora-platform.vercel.app` (`dpl_DftLYy4fsE36BvwxypkNjz4o8ZY7`)
 2. **Backend + LangGraph Agent — Render (Free Web Service):**
    - Configured via `/render.yaml` (`plan: free`).
    - Uses `/tmp/devora/workspaces` and `/tmp/devora/checkpoints/agent.db` + Firestore state sync so **no paid Render Persistent Disk is required**.
-   - **Connected Account:** `sanjay22522g@gmail.com` (`My Workspace` / `W2` / `w3` / `w4`) verified via `RENDER_API_KEY` (stored only in server runtime environment, never in Git).
+   - **Connected Account:** `sanjay22522g@gmail.com` (`My Workspace` / `tea-da3bueqbkg8c7387nhv0`)
+   - **Live Render Service:** `devora-backend` (`srv-dbk07i49v7es73bamrmg`, Auto-Deploy enabled on `Sanjai-225/devora` branch `main`)
+   - **Backend URL:** `https://devora-backend-rl0i.onrender.com` (Dashboard: `https://dashboard.render.com/web/srv-dbk07i49v7es73bamrmg`)
 3. **Database & Auth — Firebase Spark Plan (Free):**
    - Configured via `/firebase-applet-config.json` and `/firestore.rules`.
 
